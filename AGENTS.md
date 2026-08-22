@@ -21,6 +21,7 @@
 ## Backend conventions
 
 - バックエンドの初期プロジェクトはユーザーがIDEから `backend/` 配下に作成する
+- Python 3.13を使用する
 - Python仮想環境は `backend/.venv/` に作成する
 - 型ヒントを使用し、APIの入出力には明確なスキーマを定義する
 - 実装後はヘルスチェック用の `GET /health` を用意する

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Local (Frontend + Backend)" type="CompoundRunConfigurationType">
+    <toRun name="Frontend" type="js.build_tools.npm" />
+    <toRun name="Backend" type="Python.FastAPI" />
+    <method v="2" />
+  </configuration>
+</component>

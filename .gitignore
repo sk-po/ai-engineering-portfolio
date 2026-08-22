@@ -34,3 +34,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Local-only documentation
+/docs/local-development.md

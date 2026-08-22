@@ -1,0 +1,15 @@
+{
+  "name": "fde-portfolio-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.16.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "lint": "node --check server.js && node --check src/greeting.js && node --check src/main.js && node --check scripts/build.js",
+    "test": "node --test",
+    "build": "node scripts/build.js"
+  }
+}

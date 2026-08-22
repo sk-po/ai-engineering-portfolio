@@ -8,6 +8,9 @@ Forward Deployed Engineer（FDE）への転職を目的としたポートフォ�
 .
 ├── frontend/                  # フロントエンド
 ├── backend/                   # FastAPIバックエンド
+├── docs/                      # 成果物ドキュメント
+├── scripts/                   # 開発支援スクリプト
+├── .run/                      # PyCharm共有起動設定
 ├── .github/workflows/         # GitHub Actions
 ├── .gitignore
 ├── README.md
@@ -15,11 +18,49 @@ Forward Deployed Engineer（FDE）への転職を目的としたポートフォ�
 └── CLAUDE.md                  # Claude CodeからAGENTS.mdを参照
 ```
 
-## プロジェクトの作成
+## Runtime
 
-- フロントエンドはIDEから `frontend/` 配下に作成する
-- FastAPIバックエンドはIDEから `backend/` 配下に作成する
-- Python仮想環境は `backend/.venv/` に作成する
-- 各ディレクトリではGitリポジトリを初期化せず、ルートのGitだけを使用する
+- Frontend: Node.js 24
+- Backend: Python 3.13 / FastAPI
 
-IDEで各プロジェクトを作成した後、採用した技術、セットアップ方法、起動方法をこのREADMEに追記します。
+## Frontend
+
+追加パッケージに依存しない、Node.js製の静的WebサーバーとHello World画面です。
+
+```powershell
+cd frontend
+npm install
+npm start
+```
+
+`http://127.0.0.1:3000` を開いて確認します。
+
+```powershell
+npm run lint
+npm test
+npm run build
+```
+
+## Backend
+
+```powershell
+cd backend
+py -3.13 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+- API: `http://127.0.0.1:8000/`
+- OpenAPI: `http://127.0.0.1:8000/docs`
+- Health check: `http://127.0.0.1:8000/health`
+
+テストは次のコマンドで実行します。
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+## Git
+
+Gitリポジトリはルートの1つだけを使用し、`frontend/` と `backend/` では初期化しません。
