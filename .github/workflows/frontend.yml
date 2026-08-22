@@ -1,0 +1,60 @@
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+  pull_request:
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+  workflow_dispatch:
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect frontend project
+        id: frontend
+        shell: bash
+        run: |
+          if [[ -f package.json ]]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Node.js
+        if: steps.frontend.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        if: steps.frontend.outputs.exists == 'true'
+        run: npm ci
+
+      - name: Lint
+        if: steps.frontend.outputs.exists == 'true'
+        run: npm run lint --if-present
+
+      - name: Test
+        if: steps.frontend.outputs.exists == 'true'
+        run: npm test --if-present
+
+      - name: Build
+        if: steps.frontend.outputs.exists == 'true'
+        run: npm run build --if-present
+
+      - name: Report uninitialized frontend
+        if: steps.frontend.outputs.exists != 'true'
+        run: echo "Frontend project has not been initialized yet."
