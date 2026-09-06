@@ -25,7 +25,7 @@ jobs:
         id: backend
         shell: bash
         run: |
-          if [[ -f requirements.txt && -f main.py ]]; then
+          if [[ -f requirements-dev.txt && -f app/main.py ]]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
@@ -37,11 +37,13 @@ jobs:
         with:
           python-version: "3.13"
           cache: pip
-          cache-dependency-path: backend/requirements.txt
+          cache-dependency-path: |
+            backend/requirements.txt
+            backend/requirements-dev.txt
 
       - name: Install dependencies
         if: steps.backend.outputs.exists == 'true'
-        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements-dev.txt
 
       - name: Compile Python sources
         if: steps.backend.outputs.exists == 'true'
@@ -49,7 +51,7 @@ jobs:
 
       - name: Import application
         if: steps.backend.outputs.exists == 'true'
-        run: python -c "from main import app; assert app.title == 'FDE Portfolio API'"
+        run: python -c "from app.main import app; assert app.title == 'FDE Portfolio API'"
 
       - name: Test
         if: steps.backend.outputs.exists == 'true'

@@ -67,7 +67,7 @@ try {
     }
 
     Write-Host "[setup] Installing backend dependencies..." -ForegroundColor Cyan
-    & $backendPython -m pip install --disable-pip-version-check -r (Join-Path $backendDirectory "requirements.txt")
+    & $backendPython -m pip install --disable-pip-version-check -r (Join-Path $backendDirectory "requirements-dev.txt")
     Assert-CommandSucceeded "Backend dependency installation"
 
     $nodeExecutable = (Get-Command node -ErrorAction Stop).Source
@@ -81,7 +81,7 @@ try {
         -PassThru
     $backendProcess = Start-Process `
         -FilePath $backendPython `
-        -ArgumentList "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000" `
+        -ArgumentList "-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", "8000" `
         -WorkingDirectory $backendDirectory `
         -NoNewWindow `
         -PassThru
