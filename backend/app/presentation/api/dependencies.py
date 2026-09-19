@@ -10,7 +10,7 @@ def get_create_greeting() -> CreateGreeting:
     return CreateGreeting()
 
 
-@lru_cache
+@lru_cache #これは、Pythonの関数の戻り値をキャッシュしている。結果、Singleton相当の実装になっている。このキャッシュはPythonのプロセス単位
 def get_search_requirements() -> SearchRequirements:
     data_directory = (
         Path(__file__).resolve().parents[2] / "infrastructure" / "data"

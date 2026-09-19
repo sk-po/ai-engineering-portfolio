@@ -106,9 +106,19 @@ uvicorn app.main:app --reload
 python -m unittest discover -s tests -v
 ```
 
+### ASVS文書のIndex登録batch
+
+`backend/scripts/index_asvs_documents.py`は、英語・日本語CSVの対応と345件の件数を検証し、1要件を1 chunkへ変換します。通常実行はAzureを呼ばないdry-runです。
+
+```powershell
+.\backend\.venv\Scripts\python.exe .\backend\scripts\index_asvs_documents.py
+```
+
+Azureへ登録するときは、Microsoft Entra IDで認証します。詳細な環境変数の取得方法と、1件だけの疎通確認から全件登録へ進む手順は [document indexing runbook](backend/scripts/README.md) を参照してください。`--execute`を付けた実行だけがEmbedding APIを呼び、Azure AI Searchを更新します。
+
 ## Azure infrastructure
 
-Azure AI SearchとMicrosoft FoundryはBicepで管理します。サブスクリプションと既存リソースグループをコマンド引数で指定するため、テンプレートには個人のAzure識別子を含めません。設計判断は [Azure infrastructure](docs/public/azure-infrastructure.md)、検証とデプロイ手順は [infra runbook](infra/README.md) を参照してください。
+Azure AI Search、Microsoft Foundry、および`text-embedding-3-small`のモデルDeploymentはBicepで管理します。Azure AI SearchのIndex schemaは、Git管理するJSONをインフラ用Python CLIからデータプレーンへ反映します。サブスクリプションと既存リソースグループをコマンド引数で指定するため、テンプレートには個人のAzure識別子を含めません。設計判断は [Azure infrastructure](docs/public/azure-infrastructure.md)、検証とデプロイ手順は [infra runbook](infra/README.md) を参照してください。
 
 ## Git
 
