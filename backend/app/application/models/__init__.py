@@ -1,4 +1,4 @@
-from app.application.models.asvs_index_document import (
+from app.application.models.asvs_index_document_dto import (
     AsvsIndexDocument,
     EmbeddedAsvsIndexDocument,
     IndexingSummary,

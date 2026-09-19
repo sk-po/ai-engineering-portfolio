@@ -164,6 +164,24 @@ class AzureIndexingAdaptersTestCase(unittest.TestCase):
         self.assertEqual(sdk_client.documents[0]["tags"], ["ASVS"])
         self.assertEqual(sdk_client.documents[0]["content_vector"], [0.1, 0.2])
 
+    def test_runtime_embedding_does_not_wait_or_retry(self) -> None:
+        sdk_client = FakeOpenAiClient()
+        sdk_client.embeddings = RateLimitedEmbeddingsApi()
+        waits = []
+        client = AzureOpenAIEmbeddingClient(
+            base_url="https://example.openai.azure.com/openai/v1/",
+            deployment_name="text-embedding-3-small",
+            credential=object(),
+            sdk_client=sdk_client,
+            rate_limit_error_type=FakeRateLimitError,
+            max_rate_limit_retries=0,
+            sleep=waits.append,
+        )
+        with self.assertRaises(FakeRateLimitError):
+            client.embed(["query"])
+        self.assertEqual(sdk_client.embeddings.call_count, 1)
+        self.assertEqual(waits, [])
+
     def test_writer_raises_for_partial_azure_failure(self) -> None:
         writer = AzureSearchDocumentWriter(
             endpoint="https://example.search.windows.net",

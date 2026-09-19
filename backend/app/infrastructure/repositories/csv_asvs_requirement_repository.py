@@ -5,7 +5,7 @@ import unicodedata
 from collections import Counter
 from pathlib import Path
 
-from app.domain.models.asvs_requirement import AsvsRequirement, RequirementMatch
+from app.domain.models.asvs_requirement_model import AsvsRequirement, RequirementMatch
 
 _LATIN_TOKEN = re.compile(r"[a-z0-9][a-z0-9._/-]+")
 _JAPANESE_SEQUENCE = re.compile(r"[\u3040-\u30ff\u3400-\u9fffー]+")

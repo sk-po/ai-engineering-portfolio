@@ -26,6 +26,9 @@ coverage/
 .env.*
 !.env.example
 
+# Local container trust certificates
+.certs/
+
 # Editors and operating systems
 .idea/
 .vscode/
@@ -35,5 +38,5 @@ Thumbs.db
 # Logs
 *.log
 
-# Local-only documentation
-/docs/local-development.md
+# Internal learning notes
+/docs/learning/

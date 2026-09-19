@@ -86,6 +86,8 @@ npm run build
 
 ## Backend
 
+ファイル名は役割を表す接尾辞で統一しています。検索処理は`asvs_router.py` → `search_requirements_use_case.py` → 各`*_repository.py`の順に追えます。接続の組み立ては`api_dependencies.py`、入出力の型は`asvs_schema.py`です。命名規則の一覧は [File naming convention](docs/public/architecture/backend.md#file-naming-convention) を参照してください。
+
 Clean Architecture Liteを採用し、domain、application、infrastructure、presentationの依存方向を分離しています。ASVS英語版・日本語版CSVを要件IDで結合し、`POST /api/v1/requirements/search` で検索します。詳細は [Backend Architecture](docs/public/architecture/backend.md) を参照してください。
 
 ```powershell
@@ -115,6 +117,27 @@ python -m unittest discover -s tests -v
 ```
 
 Azureへ登録するときは、Microsoft Entra IDで認証します。詳細な環境変数の取得方法と、1件だけの疎通確認から全件登録へ進む手順は [document indexing runbook](backend/scripts/README.md) を参照してください。`--execute`を付けた実行だけがEmbedding APIを呼び、Azure AI Searchを更新します。
+
+### Azure AI Searchによる検索
+
+既定はCSV検索です。登録済みIndexをベクトル検索する場合は、ホスト側のPowerShellで以下を設定して起動します。接続先の取得方法は上記の登録batch手順と共通です。
+
+```powershell
+az login
+$env:ASVS_SEARCH_BACKEND="azure"
+$env:AZURE_SEARCH_ENDPOINT="https://<search-service-name>.search.windows.net"
+$env:AZURE_SEARCH_INDEX_NAME="security-docs-v1"
+$env:AZURE_OPENAI_BASE_URL="https://<foundry-account-name>.openai.azure.com/openai/v1/"
+$env:AZURE_OPENAI_EMBEDDING_DEPLOYMENT="text-embedding-3-small"
+cd backend
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+```
+
+認証ユーザーにはSearch側の`Search Index Data Reader`、Foundry側の`Cognitive Services OpenAI User`が必要です。登録時と同じEmbedding Deployment（1536次元）を指定してください。`.env`はアプリから自動読み込みされません。また、ホストのAzure CLI認証はDockerコンテナへ自動共有されないため、この手順はホスト起動用です。
+
+`/docs`から既存の`POST /api/v1/requirements/search`を実行できます。検索ごとにEmbedding APIを呼ぶため利用料金が発生します。Azureの認証・通信障害や不正な検索結果は503を返し、CSVへ自動で切り替えません。CSVへ戻す場合は`ASVS_SEARCH_BACKEND=csv`としてプロセスを再起動します。設定はプロセス内でキャッシュするため、その他の接続設定変更後も再起動してください。
+
+ベクトル検索では要件IDの完全一致を優先する保証はありません。検索スコアは同じ検索応答内の比較に使い、CSV検索のスコアと比較しません。hybrid検索は未実装です。
 
 ## Azure infrastructure
 
