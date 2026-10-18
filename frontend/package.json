@@ -1,15 +1,29 @@
 {
-  "name": "fde-portfolio-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "engines": {
-    "node": ">=24.16.0"
-  },
-  "scripts": {
-    "start": "node server.js",
-    "lint": "node --check server.js && node --check src/asvs.js && node --check src/greeting.js && node --check src/main.js && node --check scripts/build.js",
-    "test": "node --test",
-    "build": "node scripts/build.js"
-  }
+    "name": "fde-portfolio-frontend",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": ">=24.16.0"
+    },
+    "scripts": {
+        "dev": "next dev --hostname 0.0.0.0",
+        "start": "next start --hostname 0.0.0.0",
+        "lint": "eslint .",
+        "test": "node --import tsx --test test/*.test.js test/*.test.jsx",
+        "build": "next build",
+        "publish:eval": "node scripts/publish-eval-run.mjs"
+    },
+    "dependencies": {
+        "next": "16.3.5",
+        "react": "19.3.0",
+        "react-dom": "19.3.0"
+    },
+    "devDependencies": {
+        "@testing-library/react": "16.3.3",
+        "eslint": "9.39.5",
+        "eslint-config-next": "16.3.5",
+        "jsdom": "30.1.0",
+        "tsx": "4.23.15"
+    }
 }
