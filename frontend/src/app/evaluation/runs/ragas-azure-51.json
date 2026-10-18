@@ -1,0 +1,1750 @@
+{
+  "evaluation": "azure_asvs_ragas",
+  "generated_at": "2026-10-16T16:22:10.641360+00:00",
+  "execution": {
+    "search_backend": "azure",
+    "search_mode": "vector_only",
+    "search_endpoint_host": "search-asvs-rag-dev-44tcd5v4rb4sc.search.windows.net",
+    "search_index_name": "security-docs-v1",
+    "retrieval_embedding_deployment": "text-embedding-3-small",
+    "answer_model": "gpt-5.6-luna",
+    "ragas_version": "0.3.1",
+    "ragas_evaluator_model": "gpt-5.6-luna",
+    "ragas_evaluator_embedding_model": "text-embedding-3-small",
+    "ragas_evaluator_timeout_seconds": 120,
+    "ragas_evaluator_concurrency": 1,
+    "concurrency": 1
+  },
+  "case_count": 51,
+  "macro_average": {
+    "retrieval": {
+      "Recall@k": 0.7630718954248366,
+      "Precision@k": 0.3764705882352941,
+      "HitRate@k": 0.9411764705882353,
+      "MRR@k": 0.888888888888889,
+      "nDCG@k": 0.7636403594346112
+    },
+    "generation": {
+      "Faithfulness": 0.7460341979042211,
+      "AnswerRelevancy": 0.4263411341676317,
+      "ContextPrecision": 0.8513616557301193,
+      "ContextRecall": 0.7700280112044818
+    }
+  },
+  "cases": [
+    {
+      "case_id": "ST-RAG-FILE-L1",
+      "theme": "ファイルアップロード",
+      "expected_requirement_ids": [
+        "V5.2.1"
+      ],
+      "retrieved_requirement_ids": [
+        "V5.2.1",
+        "V5.2.2",
+        "V5.3.2",
+        "V5.3.1",
+        "V3.2.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.36666666666666664,
+          "AnswerRelevancy": 0.7422539043007266,
+          "ContextPrecision": 0.9999999999,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-FILE-L2",
+      "theme": "ファイルアップロード",
+      "expected_requirement_ids": [
+        "V5.2.1",
+        "V5.2.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V5.2.3",
+        "V5.1.1",
+        "V5.2.1",
+        "V5.4.1",
+        "V5.2.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.9197207891481876
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.6190476190476191,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.9999999999666667,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-FILE-L3",
+      "theme": "ファイルアップロード",
+      "expected_requirement_ids": [
+        "V5.2.1",
+        "V5.2.3",
+        "V5.2.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V5.2.4",
+        "V5.2.3",
+        "V5.1.1",
+        "V5.2.1",
+        "V5.2.6"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.9674679834891693
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.47619047619047616,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.999999999975,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-COOKIE-L1",
+      "theme": "Cookie設定",
+      "expected_requirement_ids": [
+        "V3.3.1"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.3.1",
+        "V3.5.3",
+        "V3.4.1",
+        "V7.2.3",
+        "V7.2.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 1.0,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.9999999999,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-COOKIE-L2",
+      "theme": "Cookie設定",
+      "expected_requirement_ids": [
+        "V3.3.1",
+        "V3.3.2",
+        "V3.3.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.3.2",
+        "V3.3.4",
+        "V3.3.1",
+        "V3.3.3",
+        "V3.5.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 1.0,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.9999999999666667,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-COOKIE-L3",
+      "theme": "Cookie設定",
+      "expected_requirement_ids": [
+        "V3.3.1",
+        "V3.3.2",
+        "V3.3.4",
+        "V3.3.5"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.3.2",
+        "V3.3.4",
+        "V3.3.1",
+        "V3.3.5",
+        "V3.3.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.8,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.9375,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.999999999975,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-RECOVERY-L1",
+      "theme": "認証情報の回復",
+      "expected_requirement_ids": [
+        "V6.4.1",
+        "V6.4.2"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.4.1",
+        "V6.2.4",
+        "V6.2.1",
+        "V6.2.5",
+        "V6.2.7"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.5,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.6131471927654584
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7419354838709677,
+          "AnswerRelevancy": 0.7977507813033867,
+          "ContextPrecision": 0.9999999999,
+          "ContextRecall": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-RECOVERY-L2",
+      "theme": "認証情報の回復",
+      "expected_requirement_ids": [
+        "V6.4.1",
+        "V6.4.2",
+        "V6.4.3",
+        "V6.4.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.4.1",
+        "V6.4.3",
+        "V6.5.1",
+        "V6.5.2",
+        "V6.5.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.5,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.6366824387328317
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7647058823529411,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 0.5
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-RECOVERY-L3",
+      "theme": "認証情報の回復",
+      "expected_requirement_ids": [
+        "V6.4.5",
+        "V6.4.6"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.4.1",
+        "V6.4.3",
+        "V6.4.6",
+        "V6.5.1",
+        "V6.5.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.5,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 0.3333333333333333,
+          "nDCG@k": 0.3065735963827292
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.9523809523809523,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.3333333333,
+          "ContextRecall": 0.5
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-AUTHZ-L1",
+      "theme": "認可設計",
+      "expected_requirement_ids": [
+        "V8.2.1",
+        "V8.2.2"
+      ],
+      "retrieved_requirement_ids": [
+        "V8.2.2",
+        "V8.2.1",
+        "V6.1.1",
+        "V8.1.1",
+        "V8.3.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.4722222222222222,
+          "AnswerRelevancy": 0.627846942307691,
+          "ContextPrecision": 0.9166666666361111,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-AUTHZ-L2",
+      "theme": "認可設計",
+      "expected_requirement_ids": [
+        "V8.2.1",
+        "V8.2.2",
+        "V8.2.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V8.2.2",
+        "V8.2.1",
+        "V8.1.2",
+        "V6.1.1",
+        "V8.4.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.6666666666666666,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.7653606369886217
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.85,
+          "AnswerRelevancy": 0.6325929127608642,
+          "ContextPrecision": 0.9999999999666667,
+          "ContextRecall": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-AUTHZ-L3",
+      "theme": "認可設計",
+      "expected_requirement_ids": [
+        "V8.2.1",
+        "V8.2.2",
+        "V8.2.3",
+        "V8.2.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V8.2.2",
+        "V8.2.1",
+        "V8.4.2",
+        "V8.2.4",
+        "V8.3.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.75,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.8048099750039491
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8484848484848485,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.8874999999778125,
+          "ContextRecall": 0.75
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-INJECTION-L1",
+      "theme": "インジェクション防御",
+      "expected_requirement_ids": [
+        "V1.2.1",
+        "V1.2.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V1.2.4",
+        "V1.2.5",
+        "V1.2.3",
+        "V2.2.2",
+        "V1.2.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.8503449055347546
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.75,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.7555555555303703,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-INJECTION-L2",
+      "theme": "インジェクション防御",
+      "expected_requirement_ids": [
+        "V1.2.1",
+        "V1.2.4",
+        "V1.2.6"
+      ],
+      "retrieved_requirement_ids": [
+        "V1.2.4",
+        "V1.2.6",
+        "V1.2.7",
+        "V1.2.5",
+        "V1.2.9"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.6666666666666666,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.7653606369886217
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.6666666666666666,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-INJECTION-L3",
+      "theme": "インジェクション防御",
+      "expected_requirement_ids": [
+        "V1.2.1",
+        "V1.2.4",
+        "V1.2.6",
+        "V1.2.10"
+      ],
+      "retrieved_requirement_ids": [
+        "V1.2.10",
+        "V1.2.4",
+        "V1.2.6",
+        "V1.2.7",
+        "V1.2.5"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.75,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.8318724637288826
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7777777777777778,
+          "AnswerRelevancy": 0.7713036885782495,
+          "ContextPrecision": 0.9999999999666667,
+          "ContextRecall": 0.8571428571428571
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-INPUT-VALIDATION",
+      "theme": "入力バリデーション",
+      "expected_requirement_ids": [
+        "V2.2.1",
+        "V2.2.2",
+        "V2.2.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V1.4.2",
+        "V2.2.1",
+        "V2.2.3",
+        "V6.2.6",
+        "V2.2.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 0.5,
+          "nDCG@k": 0.7122630665145961
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.5555555555555556,
+          "AnswerRelevancy": 0.5408701356265849,
+          "ContextPrecision": 0.94999999997625,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-HTTP-API",
+      "theme": "HTTP APIセキュリティ",
+      "expected_requirement_ids": [
+        "V4.1.1",
+        "V4.1.2",
+        "V4.1.3",
+        "V4.1.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.5.3",
+        "V4.1.2",
+        "V4.1.3",
+        "V4.1.4",
+        "V3.4.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.75,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 0.5,
+          "nDCG@k": 0.6096199500078984
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8888888888888888,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.6388888888675925,
+          "ContextRecall": 0.75
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-MFA",
+      "theme": "MFAとワンタイムコード",
+      "expected_requirement_ids": [
+        "V6.5.1",
+        "V6.5.3",
+        "V6.5.5",
+        "V6.5.6"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.5.1",
+        "V6.5.5",
+        "V6.5.8",
+        "V6.6.1",
+        "V6.5.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.75,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.787702056960637
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.782608695652174,
+          "AnswerRelevancy": 0.7475500960300133,
+          "ContextPrecision": 0.8666666666377778,
+          "ContextRecall": 0.75
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-SESSION",
+      "theme": "セッション管理",
+      "expected_requirement_ids": [
+        "V7.1.1",
+        "V7.1.2",
+        "V7.1.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V7.3.2",
+        "V7.1.1",
+        "V7.3.1",
+        "V6.5.5",
+        "V7.4.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.3333333333333333,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 0.5,
+          "nDCG@k": 0.2960819109658652
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8823529411764706,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.9999999999666667,
+          "ContextRecall": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-CRYPTO-MODE",
+      "theme": "暗号方式",
+      "expected_requirement_ids": [
+        "V11.3.1",
+        "V11.3.2",
+        "V11.3.3",
+        "V11.3.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V11.3.2",
+        "V11.3.1",
+        "V11.3.4",
+        "V11.3.3",
+        "V11.7.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.8,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8,
+          "AnswerRelevancy": 0.6552179975837185,
+          "ContextPrecision": 0.999999999975,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-TLS",
+      "theme": "TLS設定",
+      "expected_requirement_ids": [
+        "V12.1.1",
+        "V12.1.2",
+        "V12.1.3",
+        "V12.1.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V12.1.2",
+        "V12.2.2",
+        "V12.3.4",
+        "V12.3.3",
+        "V12.2.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.25,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.3903800499921017
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 1.0,
+          "AnswerRelevancy": 0.7651133735387546,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 0.25
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-SECRETS",
+      "theme": "シークレット管理",
+      "expected_requirement_ids": [
+        "V13.3.1",
+        "V13.3.2",
+        "V13.3.3",
+        "V13.3.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V13.3.1",
+        "V11.7.2",
+        "V13.3.3",
+        "V11.4.4",
+        "V11.1.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.5,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.5855700749881525
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7209302325581395,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.8333333332916666,
+          "ContextRecall": 0.7142857142857143
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-PRODUCTION-CONFIG",
+      "theme": "本番設定",
+      "expected_requirement_ids": [
+        "V13.4.2",
+        "V13.4.3",
+        "V13.4.4",
+        "V13.4.5",
+        "V13.4.6"
+      ],
+      "retrieved_requirement_ids": [
+        "V13.4.2",
+        "V13.4.1",
+        "V13.4.6",
+        "V13.4.4",
+        "V13.4.5"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.8,
+          "Precision@k": 0.8,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.7860137352654724
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8125,
+          "AnswerRelevancy": 0.793047269927153,
+          "ContextPrecision": 0.8041666666465626,
+          "ContextRecall": 0.8
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-SENSITIVE-DATA",
+      "theme": "機密データ保護",
+      "expected_requirement_ids": [
+        "V14.2.1",
+        "V14.2.2",
+        "V14.3.1",
+        "V14.3.2",
+        "V14.3.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V14.3.3",
+        "V14.3.2",
+        "V14.2.1",
+        "V14.2.2",
+        "V14.2.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.8,
+          "Precision@k": 0.8,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.8687949224876582
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.9696969696969697,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.999999999975,
+          "ContextRecall": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-AUDIT-LOG",
+      "theme": "監査ログ",
+      "expected_requirement_ids": [
+        "V16.2.1",
+        "V16.2.2",
+        "V16.3.1",
+        "V16.3.2",
+        "V16.3.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V16.3.2",
+        "V16.3.1",
+        "V16.4.1",
+        "V6.3.8",
+        "V16.2.4"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.4,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.5531464700081437
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.6363636363636364,
+          "AnswerRelevancy": 0.7901729041022216,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 0.4
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-SAFE-ERROR",
+      "theme": "安全なエラーハンドリング",
+      "expected_requirement_ids": [
+        "V16.5.1",
+        "V16.5.2",
+        "V16.5.3",
+        "V16.5.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V16.5.1",
+        "V16.2.5",
+        "V16.3.2",
+        "V16.4.1",
+        "V16.5.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.5,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.5413996682199069
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.6470588235294118,
+          "AnswerRelevancy": 0.6093562330055176,
+          "ContextPrecision": 0.8666666666377778,
+          "ContextRecall": 0.5
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-FILE-STORAGE",
+      "theme": "ファイル保存",
+      "expected_requirement_ids": [
+        "V5.3.1",
+        "V5.3.2",
+        "V5.3.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V5.3.3",
+        "V5.3.2",
+        "V5.3.1",
+        "V5.4.2",
+        "V5.4.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8461538461538461,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-PASSWORD-POLICY",
+      "theme": "パスワード方針",
+      "expected_requirement_ids": [
+        "V6.2.1",
+        "V6.2.2",
+        "V6.2.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.2.4",
+        "V6.2.1",
+        "V6.2.10",
+        "V6.4.1",
+        "V6.2.5"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.3333333333333333,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 0.5,
+          "nDCG@k": 0.2960819109658652
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.9545454545454546,
+          "AnswerRelevancy": 0.8109225196752131,
+          "ContextPrecision": 0.0,
+          "ContextRecall": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-PASSWORD-STORAGE",
+      "theme": "パスワード保存",
+      "expected_requirement_ids": [
+        "V11.4.2",
+        "V6.5.2"
+      ],
+      "retrieved_requirement_ids": [
+        "V11.4.2",
+        "V11.4.4",
+        "V6.5.2",
+        "V14.3.2",
+        "V14.3.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.9197207891481876
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.52,
+          "AnswerRelevancy": 0.6951692770068244,
+          "ContextPrecision": 0.9999999999666667,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-AUTH-THROTTLING",
+      "theme": "認証レート制限",
+      "expected_requirement_ids": [
+        "V6.1.1"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.1.1",
+        "V6.2.4",
+        "V6.3.1",
+        "V6.4.1",
+        "V6.2.5"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.72,
+          "AnswerRelevancy": 0.7971997164993144,
+          "ContextPrecision": 0.8333333332916666,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-MFA-EXPIRY",
+      "theme": "MFA有効期限",
+      "expected_requirement_ids": [
+        "V6.5.1",
+        "V6.5.5"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.5.5",
+        "V10.4.3",
+        "V6.5.1",
+        "V7.3.2",
+        "V7.3.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.9197207891481876
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8888888888888888,
+          "AnswerRelevancy": 0.8150600661559905,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-MFA-RECOVERY",
+      "theme": "MFA回復",
+      "expected_requirement_ids": [
+        "V6.4.4",
+        "V6.5.6"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.5.6",
+        "V6.3.3",
+        "V6.5.7",
+        "V6.3.8",
+        "V6.4.4"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.8503449055347546
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.75,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.699999999965,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-AUTH-CONSISTENCY",
+      "theme": "認証経路",
+      "expected_requirement_ids": [
+        "V6.1.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V6.3.1",
+        "V6.1.1",
+        "V6.2.5",
+        "V6.2.4",
+        "V6.2.7"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.0,
+          "Precision@k": 0.0,
+          "HitRate@k": 0.0,
+          "MRR@k": 0.0,
+          "nDCG@k": 0.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7142857142857143,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.0,
+          "ContextRecall": 0.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-SESSION-COOKIE",
+      "theme": "セッションクッキー",
+      "expected_requirement_ids": [
+        "V3.3.1",
+        "V3.3.3",
+        "V3.3.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.3.1",
+        "V3.3.3",
+        "V3.3.4",
+        "V3.3.2",
+        "V3.4.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.625,
+          "AnswerRelevancy": 0.6761287472987089,
+          "ContextPrecision": 0.9999999999666667,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-CSRF",
+      "theme": "CSRF防御",
+      "expected_requirement_ids": [
+        "V3.3.2"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.3.2",
+        "V3.3.4",
+        "V3.3.1",
+        "V3.3.3",
+        "V3.5.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8666666666666667,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.9999999999,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-BROWSER-HEADERS",
+      "theme": "ブラウザ保護ヘッダ",
+      "expected_requirement_ids": [
+        "V3.4.1",
+        "V3.4.3",
+        "V3.4.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.4.4",
+        "V3.4.1",
+        "V3.4.3",
+        "V3.4.6",
+        "V3.2.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.6,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.9166666666666666,
+          "AnswerRelevancy": 0.6939307241607781,
+          "ContextPrecision": 0.999999999975,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-CORS",
+      "theme": "CORS",
+      "expected_requirement_ids": [
+        "V3.4.2"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.4.2",
+        "V3.5.1",
+        "V3.5.2",
+        "V3.5.3",
+        "V10.2.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8275862068965517,
+          "AnswerRelevancy": 0.7373882041850542,
+          "ContextPrecision": 0.8333333332916666,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-POSTMESSAGE",
+      "theme": "postMessage",
+      "expected_requirement_ids": [
+        "V3.5.5"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.5.5",
+        "V3.5.1",
+        "V4.2.5",
+        "V4.2.3",
+        "V3.5.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.44,
+          "AnswerRelevancy": 0.6383028710801587,
+          "ContextPrecision": 0.9999999999,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-REDIRECT",
+      "theme": "外部リダイレクト",
+      "expected_requirement_ids": [
+        "V3.7.2",
+        "V3.7.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.7.3",
+        "V3.7.2",
+        "V15.3.2",
+        "V3.5.1",
+        "V3.4.8"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7083333333333334,
+          "AnswerRelevancy": 0.6856198337208141,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-HTTP-METHODS",
+      "theme": "HTTPメソッド制限",
+      "expected_requirement_ids": [
+        "V4.1.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V4.1.4",
+        "V3.5.3",
+        "V4.3.1",
+        "V4.2.5",
+        "V3.5.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.6666666666666666,
+          "AnswerRelevancy": 0.6485583141272412,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-HTTP-SMUGGLING",
+      "theme": "HTTPリクエストスマグリング",
+      "expected_requirement_ids": [
+        "V4.2.1",
+        "V4.2.2",
+        "V4.2.3",
+        "V4.2.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V15.3.7",
+        "V15.3.4",
+        "V14.3.2",
+        "V4.1.3",
+        "V3.4.5"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.0,
+          "Precision@k": 0.0,
+          "HitRate@k": 0.0,
+          "MRR@k": 0.0,
+          "nDCG@k": 0.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.6875,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.0,
+          "ContextRecall": 0.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-GRAPHQL",
+      "theme": "GraphQL",
+      "expected_requirement_ids": [
+        "V4.3.1",
+        "V4.3.2"
+      ],
+      "retrieved_requirement_ids": [
+        "V4.3.1",
+        "V4.3.2",
+        "V1.2.4",
+        "V15.1.3",
+        "V1.2.7"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.25806451612903225,
+          "AnswerRelevancy": 0.5615044485743624,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-WEBSOCKET",
+      "theme": "WebSocket",
+      "expected_requirement_ids": [
+        "V4.4.1",
+        "V4.4.2",
+        "V4.4.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V4.4.1",
+        "V12.3.1",
+        "V3.5.3",
+        "V12.3.3",
+        "V4.4.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.6666666666666666,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.6508205185601091
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.96,
+          "AnswerRelevancy": 0.0,
+          "ContextPrecision": 0.4499999999775,
+          "ContextRecall": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-RANDOM",
+      "theme": "安全な乱数",
+      "expected_requirement_ids": [
+        "V11.5.1",
+        "V11.5.2"
+      ],
+      "retrieved_requirement_ids": [
+        "V11.5.1",
+        "V6.5.3",
+        "V7.2.3",
+        "V6.5.2",
+        "V11.2.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.5,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.6131471927654584
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.875,
+          "AnswerRelevancy": 0.6121282242648279,
+          "ContextPrecision": 0.9999999999666667,
+          "ContextRecall": 0.5
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-DATA-MINIMIZATION",
+      "theme": "データ最小化",
+      "expected_requirement_ids": [
+        "V14.2.6",
+        "V14.2.7"
+      ],
+      "retrieved_requirement_ids": [
+        "V14.2.6",
+        "V14.2.1",
+        "V14.2.2",
+        "V14.2.7",
+        "V14.3.2"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.4,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.8772153153380493
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.6666666666666666,
+          "AnswerRelevancy": 0.5834599629012553,
+          "ContextPrecision": 0.7499999999625,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-FILE-METADATA",
+      "theme": "ファイルメタデータ",
+      "expected_requirement_ids": [
+        "V14.2.8"
+      ],
+      "retrieved_requirement_ids": [
+        "V14.2.8",
+        "V5.3.3",
+        "V14.2.2",
+        "V5.3.2",
+        "V5.3.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7777777777777778,
+          "AnswerRelevancy": 0.6268750192270246,
+          "ContextPrecision": 0.9999999999,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-OUTBOUND-ALLOWLIST",
+      "theme": "アウトバウンド許可リスト",
+      "expected_requirement_ids": [
+        "V13.2.4",
+        "V13.2.5"
+      ],
+      "retrieved_requirement_ids": [
+        "V3.5.1",
+        "V3.5.7",
+        "V15.3.2",
+        "V1.3.6",
+        "V3.5.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.0,
+          "Precision@k": 0.0,
+          "HitRate@k": 0.0,
+          "MRR@k": 0.0,
+          "nDCG@k": 0.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7333333333333333,
+          "AnswerRelevancy": 0.8542782066934037,
+          "ContextPrecision": 0.249999999975,
+          "ContextRecall": 0.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-SECRET-ROTATION",
+      "theme": "シークレットローテーション",
+      "expected_requirement_ids": [
+        "V13.1.4",
+        "V13.3.4"
+      ],
+      "retrieved_requirement_ids": [
+        "V13.3.4",
+        "V11.1.1",
+        "V7.2.2",
+        "V10.4.3",
+        "V6.5.5"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.5,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.6131471927654584
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7777777777777778,
+          "AnswerRelevancy": 0.8605850289730096,
+          "ContextPrecision": 0.99999999995,
+          "ContextRecall": 0.5
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-LOG-INJECTION",
+      "theme": "ログインジェクション",
+      "expected_requirement_ids": [
+        "V16.4.1"
+      ],
+      "retrieved_requirement_ids": [
+        "V16.4.1",
+        "V6.2.6",
+        "V1.2.5",
+        "V6.3.8",
+        "V1.2.9"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.3125,
+          "AnswerRelevancy": 0.6370195429033526,
+          "ContextPrecision": 0.9999999999,
+          "ContextRecall": 1.0
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-LOG-INTEGRITY",
+      "theme": "ログ完全性",
+      "expected_requirement_ids": [
+        "V16.4.2",
+        "V16.4.3"
+      ],
+      "retrieved_requirement_ids": [
+        "V16.4.3",
+        "V15.2.5",
+        "V14.2.2",
+        "V16.2.5",
+        "V13.4.1"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 0.5,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 0.6131471927654584
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.7727272727272727,
+          "AnswerRelevancy": 0.5826313302668713,
+          "ContextPrecision": 0.9999999999,
+          "ContextRecall": 0.5
+        }
+      }
+    },
+    {
+      "case_id": "ST-RAG-LOG-PRIVACY",
+      "theme": "ログの機密性",
+      "expected_requirement_ids": [
+        "V16.2.5"
+      ],
+      "retrieved_requirement_ids": [
+        "V16.2.5",
+        "V16.4.2",
+        "V14.2.1",
+        "V16.3.2",
+        "V16.4.3"
+      ],
+      "retrieval": {
+        "k": 5,
+        "metrics": {
+          "Recall@k": 1.0,
+          "Precision@k": 0.2,
+          "HitRate@k": 1.0,
+          "MRR@k": 1.0,
+          "nDCG@k": 1.0
+        }
+      },
+      "generation": {
+        "metrics": {
+          "Faithfulness": 0.8620689655172413,
+          "AnswerRelevancy": 0.7535595657701318,
+          "ContextPrecision": 0.7499999999625,
+          "ContextRecall": 1.0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "runs": [
+    {
+      "id": "ragas-azure-51",
+      "label": "Azure + RAGAS（51件・検索+生成）",
+      "file": "ragas-azure-51.json"
+    },
+    {
+      "id": "retrieval-azure-51",
+      "label": "Azure検索（51件・検索のみ）",
+      "file": "retrieval-azure-51.json"
+    },
+    {
+      "id": "retrieval-csv-51",
+      "label": "CSV検索ベースライン（51件・検索のみ）",
+      "file": "retrieval-csv-51.json"
+    }
+  ]
+}
