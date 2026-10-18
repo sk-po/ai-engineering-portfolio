@@ -1,12 +1,16 @@
 import unittest
+from collections.abc import Sequence
 from datetime import UTC, datetime
 from types import SimpleNamespace
+from typing import Any
+from unittest.mock import AsyncMock
 
 from app.application.models import AsvsIndexDocument, EmbeddedAsvsIndexDocument
-from app.infrastructure.embeddings.azure_openai_embedding_client import (
+from app.infrastructure.external.azure_openai_embedding_client import (
+    AsyncAzureOpenAIEmbeddingClient,
     AzureOpenAIEmbeddingClient,
 )
-from app.infrastructure.search.azure_search_document_writer import (
+from app.infrastructure.external.azure_search_document_writer import (
     AzureSearchDocumentWriter,
 )
 
@@ -52,9 +56,18 @@ def _document() -> AsvsIndexDocument:
 
 class FakeEmbeddingsApi:
     def __init__(self) -> None:
-        self.arguments = None
+        """Embedding APIへ渡された引数を記録するテストダブルを初期化する。"""
+        self.arguments: dict[str, Any] | None = None
 
-    def create(self, **kwargs):
+    def create(self, **kwargs: Any) -> SimpleNamespace:
+        """呼び出し引数を記録し、入力順と異なる固定応答を返す。
+
+        Args:
+            **kwargs: SDKのEmbedding生成メソッドへ渡された引数。
+
+        Returns:
+            indexとEmbeddingを持つ2件の固定応答。
+        """
         self.arguments = kwargs
         return SimpleNamespace(
             data=[
@@ -79,7 +92,18 @@ class RateLimitedEmbeddingsApi(FakeEmbeddingsApi):
         super().__init__()
         self.call_count = 0
 
-    def create(self, **kwargs):
+    def create(self, **kwargs: Any) -> SimpleNamespace:
+        """初回だけレート制限を発生させ、2回目以降は固定応答を返す。
+
+        Args:
+            **kwargs: SDKのEmbedding生成メソッドへ渡された引数。
+
+        Returns:
+            2回目以降の固定Embedding応答。
+
+        Raises:
+            FakeRateLimitError: 初回呼び出しの場合。
+        """
         self.call_count += 1
         if self.call_count == 1:
             raise FakeRateLimitError()
@@ -88,11 +112,26 @@ class RateLimitedEmbeddingsApi(FakeEmbeddingsApi):
 
 class FakeSearchClient:
     def __init__(self, *, succeeded: bool = True) -> None:
-        self.succeeded = succeeded
-        self.documents = None
+        """Azure Searchの登録成否を指定してテストダブルを初期化する。
 
-    def merge_or_upload_documents(self, *, documents):
-        self.documents = documents
+        Args:
+            succeeded: 各文書を登録成功として返すかどうか。
+        """
+        self.succeeded = succeeded
+        self.documents: list[dict[str, object]] | None = None
+
+    def merge_or_upload_documents(
+        self, *, documents: Sequence[dict[str, object]]
+    ) -> list[SimpleNamespace]:
+        """登録文書を記録し、文書ごとの固定結果を返す。
+
+        Args:
+            documents: Azure Searchへ登録する文書列。
+
+        Returns:
+            文書キー、成否、エラー内容を持つ登録結果。
+        """
+        self.documents = list(documents)
         return [
             SimpleNamespace(
                 key=document["chunk_id"],
@@ -117,16 +156,17 @@ class AzureIndexingAdaptersTestCase(unittest.TestCase):
         result = client.embed(["first", "second"])
 
         self.assertEqual(result, ((0.1, 0.2), (0.3, 0.4)))
-        self.assertEqual(sdk_client.embeddings.arguments["dimensions"], 2)
-        self.assertEqual(
-            sdk_client.embeddings.arguments["model"], "text-embedding-3-small"
-        )
+        arguments = sdk_client.embeddings.arguments
+        self.assertIsNotNone(arguments)
+        assert arguments is not None
+        self.assertEqual(arguments["dimensions"], 2)
+        self.assertEqual(arguments["model"], "text-embedding-3-small")
 
     def test_embedding_client_waits_and_retries_rate_limit(self) -> None:
         sdk_client = FakeOpenAiClient()
         sdk_client.embeddings = RateLimitedEmbeddingsApi()
-        waits = []
-        retry_notifications = []
+        waits: list[float] = []
+        retry_notifications: list[tuple[int, float]] = []
         client = AzureOpenAIEmbeddingClient(
             base_url="https://example.openai.azure.com/openai/v1/",
             deployment_name="text-embedding-3-small",
@@ -161,13 +201,16 @@ class AzureIndexingAdaptersTestCase(unittest.TestCase):
         )
 
         self.assertEqual(count, 1)
-        self.assertEqual(sdk_client.documents[0]["tags"], ["ASVS"])
-        self.assertEqual(sdk_client.documents[0]["content_vector"], [0.1, 0.2])
+        documents = sdk_client.documents
+        self.assertIsNotNone(documents)
+        assert documents is not None
+        self.assertEqual(documents[0]["tags"], ["ASVS"])
+        self.assertEqual(documents[0]["content_vector"], [0.1, 0.2])
 
     def test_runtime_embedding_does_not_wait_or_retry(self) -> None:
         sdk_client = FakeOpenAiClient()
         sdk_client.embeddings = RateLimitedEmbeddingsApi()
-        waits = []
+        waits: list[float] = []
         client = AzureOpenAIEmbeddingClient(
             base_url="https://example.openai.azure.com/openai/v1/",
             deployment_name="text-embedding-3-small",
@@ -191,9 +234,39 @@ class AzureIndexingAdaptersTestCase(unittest.TestCase):
         )
 
         with self.assertRaisesRegex(RuntimeError, "rejected"):
-            writer.merge_or_upload(
-                [EmbeddedAsvsIndexDocument(_document(), (0.1, 0.2))]
-            )
+            writer.merge_or_upload([EmbeddedAsvsIndexDocument(_document(), (0.1, 0.2))])
+
+
+class AsyncAzureEmbeddingClientTestCase(unittest.IsolatedAsyncioTestCase):
+    async def test_embed_awaits_sdk_and_preserves_input_order(self) -> None:
+        """非同期SDKをawaitし、応答index順にEmbeddingを返すことを確認する。"""
+        embeddings = AsyncMock()
+        embeddings.create.return_value = SimpleNamespace(
+            data=[
+                SimpleNamespace(index=1, embedding=[0.3, 0.4]),
+                SimpleNamespace(index=0, embedding=[0.1, 0.2]),
+            ]
+        )
+        sdk_client = SimpleNamespace(embeddings=embeddings, close=AsyncMock())
+        client = AsyncAzureOpenAIEmbeddingClient(
+            base_url="https://example.openai.azure.com/openai/v1/",
+            deployment_name="text-embedding-3-small",
+            credential=object(),
+            dimensions=2,
+            sdk_client=sdk_client,
+        )
+
+        result = await client.embed(["first", "second"])
+        await client.close()
+
+        self.assertEqual(result, ((0.1, 0.2), (0.3, 0.4)))
+        embeddings.create.assert_awaited_once_with(
+            model="text-embedding-3-small",
+            input=["first", "second"],
+            dimensions=2,
+            encoding_format="float",
+        )
+        sdk_client.close.assert_awaited_once()
 
 
 if __name__ == "__main__":

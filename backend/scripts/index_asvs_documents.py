@@ -1,15 +1,13 @@
 import argparse
-import os
 import sys
 from pathlib import Path
 
-
-'''
+"""
 AzureAIIndexにASVSドキュメントを登録するバッチスクリプト
 実行方法は、backend/scripts/README.md
 を参照
 
-'''
+"""
 
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
@@ -17,9 +15,10 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 from app.application.use_cases import IndexAsvsDocuments  # noqa: E402
-from app.infrastructure.repositories.csv_asvs_requirement_repository import (  # noqa: E402
+from app.infrastructure.files.csv_asvs_requirement_repository import (  # noqa: E402
     CsvAsvsRequirementRepository,
 )
+from app.settings import AzureSearchSettings  # noqa: E402
 
 DATA_DIR = BACKEND_DIR / "app" / "infrastructure" / "data"
 DEFAULT_ENGLISH_CSV = DATA_DIR / "asvs-5.0.0-en.csv"
@@ -52,29 +51,28 @@ def main(argv: list[str] | None = None) -> int:
     if not args.execute:
         use_case = IndexAsvsDocuments(source, batch_size=args.batch_size)
         documents = use_case.prepare(limit=args.limit)
-        print(f"Dry run succeeded: {len(documents)} documents prepared; Azure was not called.")
+        print(
+            f"Dry run succeeded: {len(documents)} documents prepared; Azure was not called."
+        )
         if documents:
             print(f"First chunk: {documents[0].chunk_id}")
             print(f"Last chunk: {documents[-1].chunk_id}")
         print("Add --execute to generate embeddings and update Azure AI Search.")
         return 0
 
-    base_url = _required_env("AZURE_OPENAI_BASE_URL")
-    search_endpoint = _required_env("AZURE_SEARCH_ENDPOINT")
-    deployment_name = os.getenv(
-        "AZURE_OPENAI_EMBEDDING_DEPLOYMENT", "text-embedding-3-small"
-    )
-    index_name = os.getenv("AZURE_SEARCH_INDEX_NAME", "security-docs-v1")
+    settings = AzureSearchSettings()
 
     from azure.identity import DefaultAzureCredential
 
-    from app.infrastructure.embeddings import AzureOpenAIEmbeddingClient
-    from app.infrastructure.search import AzureSearchDocumentWriter
+    from app.infrastructure.external import (
+        AzureOpenAIEmbeddingClient,
+        AzureSearchDocumentWriter,
+    )
 
     credential = DefaultAzureCredential()
     embedding_client = AzureOpenAIEmbeddingClient(
-        base_url=base_url,
-        deployment_name=deployment_name,
+        base_url=str(settings.openai_base_url),
+        deployment_name=settings.embedding_deployment,
         credential=credential,
         on_rate_limit=lambda attempt, seconds: print(
             "Embedding rate limit reached; "
@@ -83,8 +81,8 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     document_writer = AzureSearchDocumentWriter(
-        endpoint=search_endpoint,
-        index_name=index_name,
+        endpoint=str(settings.search_endpoint).rstrip("/"),
+        index_name=settings.search_index_name,
         credential=credential,
     )
     use_case = IndexAsvsDocuments(
@@ -104,13 +102,6 @@ def main(argv: list[str] | None = None) -> int:
         f"{summary.batch_count} batches."
     )
     return 0
-
-
-def _required_env(name: str) -> str:
-    value = os.getenv(name, "").strip()
-    if not value:
-        raise ValueError(f"Environment variable {name} is required with --execute")
-    return value
 
 
 if __name__ == "__main__":

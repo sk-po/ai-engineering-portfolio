@@ -28,9 +28,7 @@ class AzureSearchDocumentWriter:
             )
         self._client = sdk_client
 
-    def merge_or_upload(
-        self, documents: Sequence[EmbeddedAsvsIndexDocument]
-    ) -> int:
+    def merge_or_upload(self, documents: Sequence[EmbeddedAsvsIndexDocument]) -> int:
         if not documents:
             return 0
         payloads = [_to_payload(document) for document in documents]
