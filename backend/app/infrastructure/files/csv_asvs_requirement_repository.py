@@ -1,9 +1,11 @@
+import asyncio
 import csv
 import math
 import re
 import unicodedata
 from collections import Counter
 from pathlib import Path
+from typing import Literal
 
 from app.domain.models.asvs_requirement_model import AsvsRequirement, RequirementMatch
 
@@ -40,16 +42,62 @@ class CsvAsvsRequirementRepository:
             for feature, frequency in document_frequency.items()
         }
         self._document_norms = tuple(
-            _weighted_norm(features, self._idf)
-            for features in self._document_features
+            _weighted_norm(features, self._idf) for features in self._document_features
         )
 
     def list_all(self) -> tuple[AsvsRequirement, ...]:
         return self._requirements
 
-    def search(
-        self, query: str, *, level: int | None, limit: int
+    async def search(
+        self,
+        query: str,
+        *,
+        level: int | None,
+        limit: int,
+        level_filter: Literal["at_most", "exact"] = "at_most",
     ) -> tuple[RequirementMatch, ...]:
+        """CPU集約的なCSV検索をワーカースレッドで実行する。
+
+        Args:
+            query: 検索対象の正規化済み文字列。
+            level: 対象Level。level_filterがat_mostなら上限、exactなら完全一致。
+            limit: 返却する最大件数。
+            level_filter: Levelの絞り込み方法。既定at_mostは指定値以下を対象とする。
+
+        Returns:
+            スコア順に並べた検索結果。該当しない場合は空タプル。
+
+        Notes:
+            CSVは初期化時にメモリへ読み込み済みであり、この処理は外部I/Oではなく
+            CPU計算である。イベントループをブロックしないため別スレッドで実行する。
+        """
+        return await asyncio.to_thread(
+            self._search,
+            query,
+            level=level,
+            limit=limit,
+            level_filter=level_filter,
+        )
+
+    def _search(
+        self,
+        query: str,
+        *,
+        level: int | None,
+        limit: int,
+        level_filter: Literal["at_most", "exact"],
+    ) -> tuple[RequirementMatch, ...]:
+        """メモリ上のASVS要件を同期的に採点して並べ替える。
+
+        Args:
+            query: 検索対象の正規化済み文字列。
+            level: 対象Level。level_filterがat_mostなら上限、exactなら完全一致。
+            limit: 返却する最大件数。
+            level_filter: Levelの絞り込み方法。
+
+        Returns:
+            スコア順に並べた検索結果。該当しない場合は空タプル。
+        """
         query_features = _features(_expand_query(query))
         query_norm = _weighted_norm(query_features, self._idf)
         normalized_query = _normalize(query)
@@ -62,7 +110,13 @@ class CsvAsvsRequirementRepository:
             self._document_norms,
             strict=True,
         ):
-            if level is not None and requirement.level > level:
+            if (
+                level_filter == "at_most"
+                and level is not None
+                and requirement.level > level
+            ):
+                continue
+            if level_filter == "exact" and requirement.level != level:
                 continue
             score = _cosine_score(
                 query_features,
@@ -133,7 +187,7 @@ def _features(value: str) -> Counter[str]:
     for sequence in _JAPANESE_SEQUENCE.findall(normalized):
         for size, weight in ((2, 1), (3, 2)):
             for index in range(max(0, len(sequence) - size + 1)):
-                features[f"ja{size}:{sequence[index:index + size]}"] += weight
+                features[f"ja{size}:{sequence[index : index + size]}"] += weight
     return features
 
 
@@ -177,10 +231,7 @@ def _searchable_text(requirement: AsvsRequirement) -> str:
 
 def _weighted_norm(features: Counter[str], idf: dict[str, float]) -> float:
     return math.sqrt(
-        sum(
-            (count * idf.get(feature, 1.0)) ** 2
-            for feature, count in features.items()
-        )
+        sum((count * idf.get(feature, 1.0)) ** 2 for feature, count in features.items())
     )
 
 
@@ -194,9 +245,7 @@ def _cosine_score(
     if not query_norm or not document_norm:
         return 0.0
     dot_product = sum(
-        count
-        * document.get(feature, 0)
-        * idf.get(feature, 1.0) ** 2
+        count * document.get(feature, 0) * idf.get(feature, 1.0) ** 2
         for feature, count in query.items()
     )
     return dot_product / (query_norm * document_norm)

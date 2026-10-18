@@ -1,16 +1,20 @@
-from collections.abc import Iterable, Mapping
+from collections.abc import AsyncIterable, Awaitable, Mapping, Sequence
 from math import isfinite
-from typing import Any, Protocol
+from time import perf_counter
+from typing import Any, Literal, Protocol
+from uuid import uuid4
 
 from azure.core.exceptions import AzureError
 from azure.search.documents.models import VectorizedQuery
 from openai import OpenAIError
+from structlog.stdlib import BoundLogger
 
 from app.application.requirement_search_errors import RequirementSearchUnavailableError
-from app.application.ports.asvs_indexing_port import EmbeddingClient
 from app.domain.models import AsvsRequirement, RequirementMatch
+from app.observability import get_logger
 
 VECTOR_DIMENSIONS = 1536
+logger = get_logger(__name__)
 VECTOR_FIELD = "content_vector"
 SELECT_FIELDS = (
     "requirement_id",
@@ -27,10 +31,23 @@ SELECT_FIELDS = (
 )
 
 
-class VectorSearchClient(Protocol):
+class AsyncEmbeddingClient(Protocol):
+    async def embed(self, texts: Sequence[str]) -> tuple[tuple[float, ...], ...]:
+        """検索文を非同期でベクトル化する。
+
+        Args:
+            texts: ベクトル化する文章の列。
+
+        Returns:
+            入力順のベクトル列。
+        """
+        ...
+
+
+class AsyncVectorSearchClient(Protocol):
     def search(
         self, search_text: str | None = None, **kwargs: Any
-    ) -> Iterable[Mapping[str, Any]]:
+    ) -> Awaitable[AsyncIterable[Mapping[str, Any]]]:
         """Azure SDKとテスト用クライアントに共通する検索契約を定義する。
 
         Args:
@@ -38,8 +55,8 @@ class VectorSearchClient(Protocol):
             **kwargs: ベクトル、filter、取得フィールド、件数などの検索条件。
 
         Returns:
-            文書フィールドと検索スコアを持つ辞書の反復可能オブジェクト。
-            実装によっては反復中にも外部通信が発生する。
+            文書フィールドと検索スコアを持つ非同期反復可能オブジェクト。
+            反復中にも外部通信が発生する。
         """
         ...
 
@@ -49,8 +66,8 @@ class AzureSearchRequirementRepository:
 
     def __init__(
         self,
-        embedding_client: EmbeddingClient,
-        search_client: VectorSearchClient,
+        embedding_client: AsyncEmbeddingClient,
+        search_client: AsyncVectorSearchClient,
     ) -> None:
         """検索に必要なクライアントを受け取る。この時点では通信しない。
 
@@ -61,15 +78,21 @@ class AzureSearchRequirementRepository:
         self._embedding_client = embedding_client
         self._search_client = search_client
 
-    def search(
-        self, query: str, *, level: int | None, limit: int
+    async def search(
+        self,
+        query: str,
+        *,
+        level: int | None,
+        limit: int,
+        level_filter: Literal["at_most", "exact"] = "at_most",
     ) -> tuple[RequirementMatch, ...]:
         """検索文をベクトル化し、公開・承認済みASVS要件をAzureで検索する。
 
         Args:
             query: ユースケースで空白除去・検証済みの検索文。
-            level: 対象Levelの上限（1〜3）。NoneならLevelで制限しない。
+            level: 対象Level。level_filterがat_mostなら上限、exactなら完全一致。
             limit: 最大取得件数。ユースケースで1〜10に検証済みであること。
+            level_filter: Levelの絞り込み方法。既定at_mostは指定値以下を対象とする。
 
         Returns:
             Azureの返却順を保持した検索結果のタプル。該当なしは空タプル。
@@ -79,11 +102,26 @@ class AzureSearchRequirementRepository:
                 ベクトルや検索結果の検証失敗。ページ取得中の失敗も含む。
 
         Notes:
-            Embedding APIとAzure AI Searchへ通信する。CSVへの自動切り替えは行わない。
+            Embedding APIとAzure AI Searchへ非同期通信する。CSVへの自動切り替えは行わない。
+            通信段階ごとの成否・所要時間と公開ASVS検索結果を同じsearch_idで記録する。
+            入力文・ベクトル・認証情報・例外本文はログに含めない。
         """
+        search_id = uuid4().hex
+        search_logger = logger.bind(search_id=search_id)
+        stage = "embedding"
+        started = perf_counter()  # 開始時刻
         try:
-            query_vector = self._embed_query(query)
-            results = self._search_client.search(
+            query_vector = await self._embed_query(query)
+            _log_search_event(
+                search_logger,
+                stage,
+                started,
+                "success",
+                dimensions=len(query_vector),
+            )
+            stage = "azure_search"
+            started = perf_counter()
+            results = await self._search_client.search(
                 search_text=None,
                 vector_queries=[
                     VectorizedQuery(
@@ -93,19 +131,51 @@ class AzureSearchRequirementRepository:
                         exhaustive=False,
                     )
                 ],
-                filter=self._build_filter(level),
+                filter=self._build_filter(level, level_filter),  # and...でクエリ作成
                 vector_filter_mode="preFilter",
                 select=list(SELECT_FIELDS),
                 top=limit,
             )
-            # SearchItemPaged performs I/O during iteration as well as search().
-            return tuple(self._to_requirement_match(result) for result in results)
+            # AsyncItemPaged performs I/O during iteration as well as search().
+            matches_list: list[RequirementMatch] = []
+            async for result in results:
+                matches_list.append(self._to_requirement_match(result))
+            matches = tuple(matches_list)
+            _log_search_event(
+                search_logger,
+                stage,
+                started,
+                "success",
+                result_count=len(matches),
+                level=level,
+                level_filter=level_filter,
+                limit=limit,
+                results=[
+                    {
+                        "rank": rank,
+                        "requirement_id": match.requirement.requirement_id,
+                        "score": match.score,
+                        "level": match.requirement.level,
+                    }
+                    for rank, match in enumerate(matches, start=1)
+                ],
+            )
+            return matches
         except (AzureError, OpenAIError, ValueError, TypeError, KeyError) as error:
+            status = getattr(error, "status_code", None)
+            _log_search_event(
+                search_logger,
+                stage,
+                started,
+                "failure",
+                error_type=type(error).__name__,
+                http_status=status if type(status) is int else None,
+            )
             raise RequirementSearchUnavailableError(
                 "Requirement search is temporarily unavailable"
             ) from error
 
-    def _embed_query(self, query: str) -> tuple[float, ...]:
+    async def _embed_query(self, query: str) -> tuple[float, ...]:
         """検索文をEmbedding APIへ渡し、検索に使えるベクトルか検証する。
 
         Args:
@@ -119,12 +189,16 @@ class AzureSearchRequirementRepository:
             AzureError: Azure認証に失敗した場合など。呼び出し元で変換する。
             OpenAIError: Embedding APIの呼び出し失敗。呼び出し元で変換する。
         """
-        vectors = self._embedding_client.embed([query])
+        vectors: tuple[tuple[float, ...], ...] = await self._embedding_client.embed(
+            [query]
+        )
         if len(vectors) != 1:
             raise ValueError("Query embedding must contain exactly one vector")
         vector = vectors[0]
         if len(vector) != VECTOR_DIMENSIONS:
-            raise ValueError(f"Query embedding must have {VECTOR_DIMENSIONS} dimensions")
+            raise ValueError(
+                f"Query embedding must have {VECTOR_DIMENSIONS} dimensions"
+            )
         if any(
             isinstance(value, bool)
             or not isinstance(value, (int, float))
@@ -135,17 +209,20 @@ class AzureSearchRequirementRepository:
         return tuple(float(value) for value in vector)
 
     @staticmethod
-    def _build_filter(level: int | None) -> str:
+    def _build_filter(
+        level: int | None, level_filter: Literal["at_most", "exact"] = "at_most"
+    ) -> str:
         """公開・承認済みASVS 5.0.0に絞るOData条件を作る。通信は行わない。
 
         Args:
-            level: Level上限の整数（1〜3）。NoneならLevel条件を追加しない。
+            level: 対象Levelの整数（1〜3）。NoneならLevel条件を追加しない。
+            level_filter: at_mostは指定値以下、exactは指定値との一致を指定する。
 
         Returns:
             固定の対象条件と任意のLevel条件をandで結合したfilter文字列。
 
         Raises:
-            ValueError: levelがNoneでも1〜3の整数でもない場合。
+            ValueError: levelまたはlevel_filterが許容値でない場合。
         """
         conditions = [
             "framework_name eq 'OWASP ASVS'",
@@ -156,12 +233,17 @@ class AzureSearchRequirementRepository:
         if level is not None:
             if type(level) is not int or level not in {1, 2, 3}:
                 raise ValueError("level must be 1, 2, 3, or None")
-            conditions.append(f"level le {level}")
+            if level_filter == "at_most":
+                conditions.append(f"level le {level}")
+            elif level_filter == "exact":
+                conditions.append(f"level eq {level}")
+            else:
+                raise ValueError("level_filter must be at_most or exact")
         return " and ".join(conditions)
 
     @staticmethod
     def _to_requirement_match(result: Mapping[str, Any]) -> RequirementMatch:
-        """Azureの検索結果1件を検証し、ドメインモデルに変換する。
+        """Azureの検索結果１件を検証し、ドメインモデルに変換する。
 
         Args:
             result: SELECT_FIELDSの11項目と@search.scoreを持つ検索結果。
@@ -188,3 +270,35 @@ class AzureSearchRequirementRepository:
         ):
             raise ValueError("Search score must be a finite number")
         return RequirementMatch(AsvsRequirement(**fields), float(score))
+
+
+def _log_search_event(
+    event_logger: BoundLogger,
+    stage: str,
+    started: float,
+    outcome: str,
+    **details: Any,
+) -> None:
+    """Azure検索の成否と公開結果を構造化イベントとして出力する。
+
+    Args:
+        event_logger: 検索呼び出し単位のsearch_idをbindしたlogger。
+        stage: embeddingまたはazure_search。
+        started: 対象段階の開始時点のperf_counter値。
+        outcome: successまたはfailure。failureはERROR、それ以外はINFOで記録する。
+        **details: 件数・公開ASVS本文・エラー型など、呼び出し側で選別した情報。
+            入力文、認証情報、例外本文は渡さない。
+
+    Returns:
+        None。appのログ設定に従って出力する。
+    """
+    event_details = {
+        "stage": stage,
+        "outcome": outcome,
+        "duration_ms": round((perf_counter() - started) * 1000, 2),
+        **details,
+    }
+    if outcome == "failure":
+        event_logger.error("rag_search", **event_details)
+    else:
+        event_logger.info("rag_search", **event_details)

@@ -72,14 +72,21 @@ class AzureOpenAIEmbeddingClient:
             from openai import OpenAI, RateLimitError
 
             token_provider = get_bearer_token_provider(credential, _TOKEN_SCOPE)
-            sdk_client = OpenAI(
-                base_url=_normalize_base_url(base_url),
-                api_key=token_provider,
-                # Retry is handled below so nested retries don't create another
-                # burst inside Azure's rate-limit window.
-                max_retries=0,
-                **({"timeout": timeout_seconds} if timeout_seconds is not None else {}),
-            )
+            if timeout_seconds is None:
+                sdk_client = OpenAI(
+                    base_url=_normalize_base_url(base_url),
+                    api_key=token_provider,
+                    # Retry is handled below so nested retries don't create another
+                    # burst inside Azure's rate-limit window.
+                    max_retries=0,
+                )
+            else:
+                sdk_client = OpenAI(
+                    base_url=_normalize_base_url(base_url),
+                    api_key=token_provider,
+                    max_retries=0,
+                    timeout=timeout_seconds,
+                )
             rate_limit_error_type = RateLimitError
         elif rate_limit_error_type is None:
             from openai import RateLimitError
@@ -105,7 +112,9 @@ class AzureOpenAIEmbeddingClient:
             return ()
         response = self._create_with_rate_limit_retry(texts)
         ordered = sorted(response.data, key=lambda item: item.index)
-        return tuple(tuple(float(value) for value in item.embedding) for item in ordered)
+        return tuple(
+            tuple(float(value) for value in item.embedding) for item in ordered
+        )
 
     def _create_with_rate_limit_retry(self, texts: Sequence[str]) -> Any:
         """Embedding APIを呼び、レート制限時だけ待機して再試行する。
@@ -134,12 +143,107 @@ class AzureOpenAIEmbeddingClient:
                 if retry_count >= self._max_rate_limit_retries:
                     raise
                 retry_count += 1
-                wait_seconds = _retry_after_seconds(
-                    error, fallback=self._rate_limit_wait_seconds
-                ) + self._rate_limit_buffer_seconds
+                wait_seconds = (
+                    _retry_after_seconds(error, fallback=self._rate_limit_wait_seconds)
+                    + self._rate_limit_buffer_seconds
+                )
                 if self._on_rate_limit is not None:
                     self._on_rate_limit(retry_count, wait_seconds)
                 self._sleep(wait_seconds)
+
+
+class AsyncAzureOpenAIEmbeddingClient:
+    def __init__(
+        self,
+        *,
+        base_url: str,
+        deployment_name: str,
+        credential: Any,
+        dimensions: int = 1536,
+        timeout_seconds: float | None = None,
+        sdk_client: Any | None = None,
+    ) -> None:
+        """Runtime検索用の非同期Embeddingクライアントを設定する。
+
+        Args:
+            base_url: /openai/v1/で終わるAzure OpenAIの接続先URL。
+            deployment_name: 検索時に使うEmbeddingのDeployment名。
+            credential: SDK生成時にEntra IDトークンを取得する認証オブジェクト。
+            dimensions: 生成するベクトルの次元数。既定は1536。
+            timeout_seconds: SDKの各要求timeout（秒）。NoneならSDK既定値を使う。
+            sdk_client: テスト用に注入する非同期SDK。NoneならSDKを生成する。
+
+        Raises:
+            ValueError: 接続設定、次元数、またはtimeoutが不正な場合。
+
+        Notes:
+            この時点では外部通信を行わない。runtime検索では再試行を無効にするため、
+            レート制限の待機・再試行機能は持たせない。
+        """
+        if not base_url.strip():
+            raise ValueError("base_url is required")
+        if not deployment_name.strip():
+            raise ValueError("deployment_name is required")
+        if dimensions < 1:
+            raise ValueError("dimensions must be positive")
+        if timeout_seconds is not None and timeout_seconds <= 0:
+            raise ValueError("timeout_seconds must be positive")
+
+        self._deployment_name = deployment_name
+        self._dimensions = dimensions
+        if sdk_client is None:
+            from azure.identity.aio import get_bearer_token_provider
+            from openai import AsyncOpenAI
+
+            token_provider = get_bearer_token_provider(credential, _TOKEN_SCOPE)
+            if timeout_seconds is None:
+                sdk_client = AsyncOpenAI(
+                    base_url=_normalize_base_url(base_url),
+                    api_key=token_provider,
+                    max_retries=0,
+                )
+            else:
+                sdk_client = AsyncOpenAI(
+                    base_url=_normalize_base_url(base_url),
+                    api_key=token_provider,
+                    max_retries=0,
+                    timeout=timeout_seconds,
+                )
+        self._client = sdk_client
+
+    async def embed(self, texts: Sequence[str]) -> tuple[tuple[float, ...], ...]:
+        """文章を非同期Embedding APIでベクトル化し、入力順で返す。
+
+        Args:
+            texts: ベクトル化する文章の列。空なら外部通信を行わない。
+
+        Returns:
+            各文章に対応する浮動小数点数のベクトルのタプル。空入力は空タプル。
+
+        Notes:
+            SDKの認証・通信エラーは呼び出し元へ伝える。返却件数や次元数の検証は
+            利用側で行う。
+        """
+        if not texts:
+            return ()
+        response = await self._client.embeddings.create(
+            model=self._deployment_name,
+            input=list(texts),
+            dimensions=self._dimensions,
+            encoding_format="float",
+        )
+        ordered = sorted(response.data, key=lambda item: item.index)
+        return tuple(
+            tuple(float(value) for value in item.embedding) for item in ordered
+        )
+
+    async def close(self) -> None:
+        """SDKが保持する非同期HTTP接続を閉じる。
+
+        Returns:
+            None。
+        """
+        await self._client.close()
 
 
 def _normalize_base_url(value: str) -> str:
