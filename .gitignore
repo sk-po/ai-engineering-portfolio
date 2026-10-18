@@ -38,5 +38,11 @@ Thumbs.db
 # Logs
 *.log
 
+# Generated RAG evaluation reports
+/backend/test-results/
+
 # Internal learning notes
 /docs/learning/
+
+# Local project management and working artifacts
+/docs/project-management/

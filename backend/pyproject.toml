@@ -1,0 +1,51 @@
+[project]
+name = "asvs-requirement-finder-backend"
+version = "0.1.0"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "azure-core[aio]==1.41.0",
+    "azure-identity==1.25.3",
+    "azure-search-documents==12.0.0",
+    "fastapi==0.141.1",
+    "openai==3.13.0",
+    "pydantic-settings==2.15.0",
+    "structlog==26.1.0",
+    "uvicorn==0.52.4",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2==2.12.0",
+    "langchain-community==0.3.31",
+    "mypy>=2.3.1",
+    "pillow==12.3.0",
+    "ragas==0.3.1",
+    "ruff>=0.16.8",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.13"
+files = ["app", "scripts", "tests"]
+plugins = ["pydantic.mypy"]
+strict = true
+show_error_codes = true
+pretty = true
+warn_unused_configs = true
+
+[tool.uv]
+package = false
+required-version = ">=0.12.17,<0.13"
+system-certs = true
