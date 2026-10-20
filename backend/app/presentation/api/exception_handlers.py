@@ -153,7 +153,6 @@ def register_exception_handlers(application: FastAPI) -> None:
         FastAPIの例外クラス探索で同じhandlerへ集約する。
     """
 
-
     # 例外の基本方針としては、アプリ例外、バリデーション(FastAPI)、予期せぬエラーの３つを構成する
     application.exception_handler(ApplicationError)(handle_application_error)
     application.exception_handler(RequestValidationError)(handle_validation_error)

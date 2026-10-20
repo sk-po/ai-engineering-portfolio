@@ -1,0 +1,107 @@
+# Container Apps へのアプリ反映（GitHub Actions → Azure, OIDC）。
+#
+# 役割分担:
+#   - deploy.yml      : ACRビルド + Bicepフルデプロイ（インフラ/Key Vault/初回アプリ作成）
+#   - deploy-apps.yml : 既存Container Appのイメージだけ更新する軽量CD（本ファイル）
+#
+# このワークフローはインフラやKey Vaultに触れません。Bicepで作成済みの
+# Container App（backend/frontend）に対し、新しいイメージをACRへビルドして
+# `az containerapp update` で新リビジョンを発行するだけです。
+# Managed IdentityとACR/secretの構成は既存のアプリ設定をそのまま引き継ぎます。
+#
+# 前提（deploy.ymlと同じOIDCセットアップ）:
+#   - Microsoft Entra アプリ登録 + GitHub federated credential
+#   - 対象リソースグループへ Contributor（containerapp update と acr build に十分）
+#
+# 必要なGitHub設定:
+#   Variables（非機密）:
+#     AZURE_RESOURCE_GROUP      （必須）
+#     AZURE_CONTAINER_REGISTRY  （必須。ACR名）
+#     AZURE_BACKEND_APP         （任意。既定 backend-asvs-rag-dev）
+#     AZURE_FRONTEND_APP        （任意。既定 frontend-asvs-rag-dev）
+#   Secrets:
+#     AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
+#
+# コスト配慮のため手動実行（workflow_dispatch）のみにしています。
+
+name: Deploy apps to Container Apps
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "更新対象のアプリ"
+        type: choice
+        required: true
+        default: "both"
+        options:
+          - both
+          - backend
+          - frontend
+      image_tag:
+        description: "コンテナイメージのタグ。空ならコミットSHAを使用。"
+        required: false
+        default: ""
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-apps
+  cancel-in-progress: false
+
+jobs:
+  deploy-apps:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      ACR_NAME: ${{ vars.AZURE_CONTAINER_REGISTRY }}
+      BACKEND_APP: ${{ vars.AZURE_BACKEND_APP || 'backend-asvs-rag-dev' }}
+      FRONTEND_APP: ${{ vars.AZURE_FRONTEND_APP || 'frontend-asvs-rag-dev' }}
+      IMAGE_TAG: ${{ inputs.image_tag || github.sha }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Allow containerapp extension auto-install
+        run: az config set extension.use_dynamic_install=yes_without_prompt
+
+      - name: Build and update backend
+        if: ${{ inputs.target == 'both' || inputs.target == 'backend' }}
+        run: |
+          set -euo pipefail
+          login_server="${ACR_NAME}.azurecr.io"
+          az acr build --registry "$ACR_NAME" --image "asvs-backend:$IMAGE_TAG" ./backend
+          az containerapp update \
+            --name "$BACKEND_APP" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "${login_server}/asvs-backend:${IMAGE_TAG}"
+
+      - name: Build and update frontend
+        if: ${{ inputs.target == 'both' || inputs.target == 'frontend' }}
+        run: |
+          set -euo pipefail
+          login_server="${ACR_NAME}.azurecr.io"
+          az acr build --registry "$ACR_NAME" --image "asvs-frontend:$IMAGE_TAG" ./frontend
+          az containerapp update \
+            --name "$FRONTEND_APP" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "${login_server}/asvs-frontend:${IMAGE_TAG}"
+
+      - name: Report frontend URL
+        if: ${{ inputs.target == 'both' || inputs.target == 'frontend' }}
+        run: |
+          set -euo pipefail
+          fqdn=$(az containerapp show \
+            --name "$FRONTEND_APP" --resource-group "$RESOURCE_GROUP" \
+            --query 'properties.configuration.ingress.fqdn' -o tsv)
+          echo "### Updated frontend: https://${fqdn}" >> "$GITHUB_STEP_SUMMARY"

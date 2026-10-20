@@ -21,7 +21,9 @@ class GuideRequirementsTestCase(unittest.IsolatedAsyncioTestCase):
     async def test_returns_the_next_question_without_running_rag(self) -> None:
         """未確認事項がある場合は質問だけを返すことを確認する。"""
         self.planner.plan.return_value = GuidedRequirementsDecision(
-            action="ask", question="個人情報を扱いますか？", missing_topics=("扱うデータ",)
+            action="ask",
+            question="個人情報を扱いますか？",
+            missing_topics=("扱うデータ",),
         )
 
         result = await self.use_case.execute(

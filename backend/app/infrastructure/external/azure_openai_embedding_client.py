@@ -2,7 +2,9 @@ import time
 from collections.abc import Callable, Sequence
 from typing import Any
 
-_TOKEN_SCOPE = "https://ai.azure.com/.default"
+# Azure OpenAIのデータプレーン(*.openai.azure.com/openai/v1/)をEntra IDで
+# 呼ぶ際の標準スコープ。MIロール「Cognitive Services OpenAI User」に対応する。
+_TOKEN_SCOPE = "https://cognitiveservices.azure.com/.default"
 
 
 class AzureOpenAIEmbeddingClient:

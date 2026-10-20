@@ -6,4 +6,8 @@ from app.application.ports.requirement_answer_generator_port import (
 )
 from app.application.ports.requirement_repository_port import RequirementRepository
 
-__all__ = ["GuidedRequirementsPlanner", "RequirementAnswerGenerator", "RequirementRepository"]
+__all__ = [
+    "GuidedRequirementsPlanner",
+    "RequirementAnswerGenerator",
+    "RequirementRepository",
+]

@@ -60,7 +60,10 @@ class GuideRequirements:
                 sources=(),
                 turn=len(normalized_answers) + 1,
             )
-        review_queries = (*_derive_review_queries(feature, normalized_answers), *decision.retrieval_queries)
+        review_queries = (
+            *_derive_review_queries(feature, normalized_answers),
+            *decision.retrieval_queries,
+        )
         query = "\n".join(
             (
                 "以下の機能要件をセキュリティレビューしてください。",
@@ -88,9 +91,7 @@ class GuideRequirements:
         )
 
 
-def _derive_review_queries(
-    feature: str, answers: Sequence[str]
-) -> tuple[str, ...]:
+def _derive_review_queries(feature: str, answers: Sequence[str]) -> tuple[str, ...]:
     """機能要件の操作語から、RAGで必ず確認すべきセキュリティ観点を補う。
 
     Args:
@@ -106,7 +107,10 @@ def _derive_review_queries(
     """
     text = " ".join((feature, *answers))
     queries: list[str] = []
-    if any(term in text for term in ("閲覧", "編集", "削除", "投稿", "会員", "権限", "所有")):
+    if any(
+        term in text
+        for term in ("閲覧", "編集", "削除", "投稿", "会員", "権限", "所有")
+    ):
         queries.append("認可 権限 アクセス制御 所有者 データ固有 機能レベル")
     if any(term in text for term in ("画像", "ファイル", "アップロード", "添付")):
         queries.append("ファイルアップロード 拡張子 内容検証 サイズ")

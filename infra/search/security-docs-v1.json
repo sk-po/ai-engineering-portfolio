@@ -1,0 +1,64 @@
+{
+  "name": "security-docs-v1",
+  "description": "Security documents index for the OWASP ASVS RAG portfolio.",
+  "fields": [
+    { "name": "chunk_id", "type": "Edm.String", "key": true, "searchable": false, "filterable": true, "sortable": false, "facetable": false, "retrievable": true },
+    { "name": "document_id", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": false, "retrievable": true },
+    { "name": "title", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "section", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "content", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "content_vector", "type": "Collection(Edm.Single)", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": false, "dimensions": 1536, "vectorSearchProfile": "vector-profile-default" },
+    { "name": "summary", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "source_uri", "type": "Edm.String", "key": false, "searchable": false, "filterable": false, "sortable": false, "facetable": false, "retrievable": true },
+    { "name": "source_name", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "document_type", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "category", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "tags", "type": "Collection(Edm.String)", "key": false, "searchable": true, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "language", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "version", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": false, "retrievable": true },
+    { "name": "updated_at", "type": "Edm.DateTimeOffset", "key": false, "searchable": false, "filterable": true, "sortable": true, "facetable": false, "retrievable": true },
+    { "name": "security_level", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "allowed_group_ids", "type": "Collection(Edm.String)", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": false, "retrievable": false },
+    { "name": "security_domain", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "system_name", "type": "Edm.String", "key": false, "searchable": true, "filterable": true, "sortable": false, "facetable": true, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "severity", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "control_ids", "type": "Collection(Edm.String)", "key": false, "searchable": true, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "content_status", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "effective_from", "type": "Edm.DateTimeOffset", "key": false, "searchable": false, "filterable": true, "sortable": true, "facetable": false, "retrievable": true },
+    { "name": "effective_to", "type": "Edm.DateTimeOffset", "key": false, "searchable": false, "filterable": true, "sortable": true, "facetable": false, "retrievable": true },
+    { "name": "framework_name", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "requirement_id", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": true, "facetable": true, "retrievable": true },
+    { "name": "chapter_id", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": true, "facetable": true, "retrievable": true },
+    { "name": "chapter_name_ja", "type": "Edm.String", "key": false, "searchable": true, "filterable": true, "sortable": false, "facetable": true, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "chapter_name_en", "type": "Edm.String", "key": false, "searchable": true, "filterable": true, "sortable": false, "facetable": true, "retrievable": true, "analyzer": "en.microsoft" },
+    { "name": "section_id", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": true, "facetable": true, "retrievable": true },
+    { "name": "section_name_ja", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "section_name_en", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "en.microsoft" },
+    { "name": "description_ja", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "ja.microsoft" },
+    { "name": "description_en", "type": "Edm.String", "key": false, "searchable": true, "filterable": false, "sortable": false, "facetable": false, "retrievable": true, "analyzer": "en.microsoft" },
+    { "name": "level", "type": "Edm.Int32", "key": false, "searchable": false, "filterable": true, "sortable": true, "facetable": true, "retrievable": true },
+    { "name": "translation_status", "type": "Edm.String", "key": false, "searchable": false, "filterable": true, "sortable": false, "facetable": true, "retrievable": true },
+    { "name": "official_english_source", "type": "Edm.String", "key": false, "searchable": false, "filterable": false, "sortable": false, "facetable": false, "retrievable": true },
+    { "name": "japanese_translation_source", "type": "Edm.String", "key": false, "searchable": false, "filterable": false, "sortable": false, "facetable": false, "retrievable": true }
+  ],
+  "vectorSearch": {
+    "algorithms": [
+      {
+        "name": "hnsw-default",
+        "kind": "hnsw",
+        "hnswParameters": {
+          "m": 4,
+          "efConstruction": 400,
+          "efSearch": 500,
+          "metric": "cosine"
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "name": "vector-profile-default",
+        "algorithm": "hnsw-default"
+      }
+    ]
+  }
+}

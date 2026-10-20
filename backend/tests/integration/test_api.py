@@ -160,7 +160,9 @@ class ApiTestCase(unittest.TestCase):
         )
         use_case = Mock(spec=GenerateRequirementAnswer)
         use_case.execute_per_level = AsyncMock(
-            return_value=GeneratedRequirementAnswer(answer="[V6.1.1] 回答", sources=(match,))
+            return_value=GeneratedRequirementAnswer(
+                answer="[V6.1.1] 回答", sources=(match,)
+            )
         )
         application = create_app()
         application.dependency_overrides[get_generate_requirement_answer] = lambda: (

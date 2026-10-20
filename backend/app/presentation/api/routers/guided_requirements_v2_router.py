@@ -9,7 +9,9 @@ from app.presentation.api.schemas.guided_requirements_v2_schema import (
     GuidedRequirementsTurnResponse,
 )
 
-router = APIRouter(prefix="/api/v2/guided-requirements", tags=["guided requirements v2"])
+router = APIRouter(
+    prefix="/api/v2/guided-requirements", tags=["guided requirements v2"]
+)
 GuideUseCase = Annotated[GuideRequirements, Depends(get_guide_requirements)]
 
 
