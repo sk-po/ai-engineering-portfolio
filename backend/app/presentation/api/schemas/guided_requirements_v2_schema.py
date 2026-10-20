@@ -55,7 +55,9 @@ class GuidedRequirementsTurnResponse(BaseModel):
             question=result.question,
             missing_topics=list(result.missing_topics),
             answer=result.answer,
-            sources=[RequirementResponse.from_domain(source) for source in result.sources],
+            sources=[
+                RequirementResponse.from_domain(source) for source in result.sources
+            ],
             retrieval=(
                 LevelScopedRetrieval.from_target_level(level)
                 if result.action == "complete"

@@ -87,7 +87,9 @@ class GenerateRequirementAnswer:
             RequirementAnswerUnavailableError: 回答生成を利用できない場合。
         """
         normalized_query = query.strip()
-        retrieval_query = search_query.strip() if search_query is not None else normalized_query
+        retrieval_query = (
+            search_query.strip() if search_query is not None else normalized_query
+        )
         if response_style not in {"standard", "security_review"}:
             raise ValueError("response_style is invalid")
         sources = await self._search_requirements.execute_per_level(

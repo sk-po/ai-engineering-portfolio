@@ -27,7 +27,9 @@ def _sdk_client(content: str) -> SimpleNamespace:
             ]
         )
     )
-    return SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    return SimpleNamespace(
+        chat=SimpleNamespace(completions=SimpleNamespace(create=create))
+    )
 
 
 class OpenAIGuidedRequirementsPlannerClientTestCase(unittest.IsolatedAsyncioTestCase):
@@ -54,4 +56,3 @@ class OpenAIGuidedRequirementsPlannerClientTestCase(unittest.IsolatedAsyncioTest
 
         self.assertEqual(decision.action, "complete")
         self.assertIsNone(decision.question)
-

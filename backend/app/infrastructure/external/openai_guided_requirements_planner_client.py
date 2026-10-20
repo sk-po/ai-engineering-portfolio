@@ -98,7 +98,9 @@ class OpenAIGuidedRequirementsPlannerClient:
                 or not isinstance(retrieval_queries, list)
             ):
                 raise ValueError("Planner decision is invalid")
-            if action == "ask" and (not isinstance(question, str) or len(question.strip()) < 2):
+            if action == "ask" and (
+                not isinstance(question, str) or len(question.strip()) < 2
+            ):
                 raise ValueError("Planner question is invalid")
             decision = GuidedRequirementsDecision(
                 action=action,
@@ -163,11 +165,23 @@ def _fallback_decision(answer_count: int) -> GuidedRequirementsDecision:
         ための代替経路である。外部通信障害や認証失敗には使用しない。
     """
     questions = (
-        ("認証と認可", "この機能で、未認証利用者と認証済み利用者の操作範囲をどのように分けますか？"),
+        (
+            "認証と認可",
+            "この機能で、未認証利用者と認証済み利用者の操作範囲をどのように分けますか？",
+        ),
         ("扱うデータ", "個人情報、決済情報、または業務上の機密情報を扱いますか？"),
-        ("認可", "閲覧、作成、編集、削除の各操作を実行できる利用者はどのように判定しますか？"),
-        ("外部公開とファイル処理", "外部公開、ファイルアップロード、または外部サービス連携はありますか？"),
-        ("監査", "記録・追跡が必要な操作や、管理者による確認が必要な操作はありますか？"),
+        (
+            "認可",
+            "閲覧、作成、編集、削除の各操作を実行できる利用者はどのように判定しますか？",
+        ),
+        (
+            "外部公開とファイル処理",
+            "外部公開、ファイルアップロード、または外部サービス連携はありますか？",
+        ),
+        (
+            "監査",
+            "記録・追跡が必要な操作や、管理者による確認が必要な操作はありますか？",
+        ),
     )
     if answer_count >= len(questions):
         return GuidedRequirementsDecision(
