@@ -66,12 +66,22 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Set up Docker Buildx
+        if: ${{ inputs.deploy_apps }}
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push images to ACR
         if: ${{ inputs.deploy_apps }}
         run: |
           set -euo pipefail
-          az acr build --registry "$ACR_NAME" --image "asvs-backend:$IMAGE_TAG" ./backend
-          az acr build --registry "$ACR_NAME" --image "asvs-frontend:$IMAGE_TAG" ./frontend
+          # ACRのclassicビルダーはBuildKit非対応のため、BuildKitを持つランナー上で
+          # buildxビルドしてpushする。DockerfileのRUN --mount(secret/cache)が使える。
+          login_server="${ACR_NAME}.azurecr.io"
+          az acr login --name "$ACR_NAME"
+          docker buildx build --push --target runtime \
+            --tag "${login_server}/asvs-backend:${IMAGE_TAG}" ./backend
+          docker buildx build --push --target runtime \
+            --tag "${login_server}/asvs-frontend:${IMAGE_TAG}" ./frontend
 
       - name: Deploy Bicep
         run: |
