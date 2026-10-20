@@ -19,9 +19,9 @@ param acrSku = 'Basic'
 //   push images to ACR, then redeploy with: deployContainerApps=true backendImage=... frontendImage=...
 param deployContainerApps = false
 
-// Scale-to-zero for the lowest idle cost. Raise minReplicas to 1 if cold starts
-// are unacceptable for a live demo.
-param minReplicas = 0
+// 公開デモ期間はcold startを避けるためminReplicas=1で常時起動する。
+// アイドルコストは小さい。活動終了後にコスト最小化したい場合は0へ戻す。
+param minReplicas = 1
 param maxReplicas = 1
 
 // First deploy uses the public placeholder image so the apps provision before any
