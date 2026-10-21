@@ -62,6 +62,11 @@ export async function generateRequirementAnswer(
   });
 
   if (!response.ok) {
+    if (response.status === 503) {
+      throw new Error(
+        "AI回答を生成できませんでした。ローカル環境では、.env に OpenAI APIキー（OPENAI_API_KEY と OPENAI_CHAT_MODEL）を設定しないと動きません。公開デモでは設定済みです。",
+      );
+    }
     throw new Error(
       "AI回答の生成に失敗しました。バックエンドの設定と起動状態を確認してください。",
     );
@@ -88,7 +93,7 @@ export async function guideRequirements(
   });
   if (!response.ok) {
     if (response.status === 503) {
-      throw new Error("AIによる確認処理に失敗しました。少し時間を置いて同じ回答を再送してください。");
+      throw new Error("セキュリティレビューを実行できませんでした。ローカル環境では、.env に OpenAI APIキー（OPENAI_API_KEY と OPENAI_CHAT_MODEL）を設定しないと動きません。公開デモでは設定済みです。");
     }
     if (response.status === 422) {
       throw new Error("機能要件は20文字以上で入力してください。");
