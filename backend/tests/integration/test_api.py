@@ -30,10 +30,10 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual(response.json(), {"message": "Hello, World!"})
 
     def test_say_hello_uses_name(self) -> None:
-        response = self.client.get("/hello/FDE")
+        response = self.client.get("/hello/world")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"message": "Hello, FDE!"})
+        self.assertEqual(response.json(), {"message": "Hello, world!"})
 
     def test_health_returns_ok(self) -> None:
         response = self.client.get("/health")

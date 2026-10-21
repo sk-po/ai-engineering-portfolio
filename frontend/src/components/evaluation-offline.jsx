@@ -56,6 +56,17 @@ function formatTimestamp(isoTimestamp) {
 }
 
 /**
+ * プルダウンの選択肢を実行日時ベースの表示名にする。同日時の区別に検索モードを併記する。
+ *
+ * @param {object} run - 正規化run。generatedAtとmodeを使う。
+ * @returns {string} 実行日時を主とした表示名。
+ */
+function runOptionLabel(run) {
+  const when = formatTimestamp(run.generatedAt);
+  return run.mode ? `${when}・${run.mode}` : when;
+}
+
+/**
  * コード版と未コミット差分の記録を、再現性の観点で読める文字列へ整形する。
  *
  * @param {string | null} sha - 実行時のgitコミットSHA。nullは未記録。
@@ -218,6 +229,10 @@ export default function EvaluationOffline() {
 
   return (
     <>
+      <div className="wip-banner" role="note">
+        <span className="wip-tag">改善中</span>
+        <span>このRAG評価ビューは現在改善中です。表示項目・指標・比較軸は今後変わる可能性があります。</span>
+      </div>
       <p className="eyebrow">OFFLINE EVALUATION</p>
       <h1>RAG品質の実測記録</h1>
       <p className="lead">
@@ -247,33 +262,33 @@ export default function EvaluationOffline() {
       </aside>
 
       <section aria-labelledby="compare-heading">
-        <h2 id="compare-heading">run比較（版の時間軸）</h2>
+        <h2 id="compare-heading">実行日時で品質を比較（時系列）</h2>
         <p className="section-note">
-          2つのrunの共通指標の差分を見ます。検索器の変更などによる品質の動きを追う用途です。差分は対象−基準で、正が改善方向です。
+          2つの実行日時の共通指標の差分を見ます。検索器の変更などによる品質の動きを追う用途です。差分は比較先−比較元で、正が改善方向です。
         </p>
         <div className="run-picker">
           <label>
-            基準run
+            比較元（実行日時）
             <select
               value={baselineId}
               onChange={(event) => setBaselineId(event.target.value)}
             >
               {runs.map((run) => (
                 <option key={run.id} value={run.id}>
-                  {run.label}
+                  {runOptionLabel(run)}
                 </option>
               ))}
             </select>
           </label>
           <label>
-            対象run
+            比較先（実行日時）
             <select
               value={targetId}
               onChange={(event) => setTargetId(event.target.value)}
             >
               {runs.map((run) => (
                 <option key={run.id} value={run.id}>
-                  {run.label}
+                  {runOptionLabel(run)}
                 </option>
               ))}
             </select>
@@ -283,17 +298,17 @@ export default function EvaluationOffline() {
       </section>
 
       <section aria-labelledby="detail-heading">
-        <h2 id="detail-heading">run詳細</h2>
+        <h2 id="detail-heading">選択した実行日時の詳細</h2>
         <div className="run-picker">
           <label>
-            表示するrun
+            表示する実行日時
             <select
               value={detailId}
               onChange={(event) => setDetailId(event.target.value)}
             >
               {runs.map((run) => (
                 <option key={run.id} value={run.id}>
-                  {run.label}
+                  {runOptionLabel(run)}
                 </option>
               ))}
             </select>

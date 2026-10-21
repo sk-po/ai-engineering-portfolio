@@ -29,6 +29,9 @@ coverage/
 # Local container trust certificates
 .certs/
 
+# Local-only working outputs (evaluation results, scratch)
+outputs/
+
 # Editors and operating systems
 .idea/
 .vscode/

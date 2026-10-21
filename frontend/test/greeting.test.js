@@ -4,7 +4,7 @@ import test from "node:test";
 import { createGreeting } from "../src/greeting.js";
 
 test("creates a greeting for a supplied name", () => {
-  assert.equal(createGreeting("FDE"), "Hello, FDE!");
+  assert.equal(createGreeting("world"), "Hello, world!");
 });
 
 test("falls back to World for an empty name", () => {

@@ -15,7 +15,7 @@ test("search results and input survive accessible tab switching", async (t) => {
   await screen.findByText("V6.1.1");
   fireEvent.keyDown(screen.getByRole("tab", { name: "要件検索" }), { key: "ArrowRight" });
   assert.equal(screen.getByRole("tab", { name: "AI回答" }).getAttribute("aria-selected"), "true");
-  assert.ok(screen.getByRole("heading", { name: /ASVSを根拠に/ }));
+  assert.ok(screen.getByRole("heading", { name: /AIが回答/ }));
   assert.ok(screen.getByRole("button", { name: "AI回答を生成" }));
   fireEvent.keyDown(screen.getByRole("tab", { name: "AI回答" }), { key: "Home" });
   assert.equal(screen.getByLabelText("確認したいこと").value, "パスワード");

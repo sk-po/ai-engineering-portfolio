@@ -15,6 +15,17 @@ const DEFAULT_TRANSLATION_NOTICE =
 const IDLE_OPERATION = { phase: "idle", payload: null, error: "" };
 
 /**
+ * 選択Levelに応じたRAG抽出件数の説明文を返す。各Levelから最大5件を積み上げる。
+ *
+ * @param {number} level - 対象Level（1〜3）。
+ * @returns {string} 抽出条件の説明文。Level1は5件、以降は合計を明示する。
+ */
+function levelRetrievalText(level) {
+  if (level <= 1) return "Level 1：最大5件を抽出します";
+  return `Level 1〜${level}：各Level最大5件（合計最大${level * 5}件）を抽出します`;
+}
+
+/**
  * ASVS要件を検索結果またはAI回答の根拠として表示する。
  *
  * @param {{item: object}} props - 表示する要件。要件ID、Level、日本語・英語本文、分類、スコアを含む。
@@ -380,15 +391,9 @@ export default function SearchWorkspace() {
               APPLICATION SECURITY VERIFICATION STANDARD
             </p>
             <h1 id="page-title">
-              {activeTab === "search" ? (
-                <>
-                  セキュリティ要件を、<br />日本語ですばやく探す。
-                </>
-              ) : (
-                <>
-                  ASVSを根拠に、<br />AIへ質問する。
-                </>
-              )}
+              {activeTab === "search"
+                ? "ASVSのセキュリティ要件を日本語で検索する"
+                : "取得したASVS要件だけを根拠にAIが回答する"}
             </h1>
             <p className="lead">
               {activeTab === "search"
@@ -431,7 +436,7 @@ export default function SearchWorkspace() {
                   <option value="2">Level 2 — 標準</option>
                   <option value="3">Level 3 — 高保証</option>
                 </select>
-                <span>選択したLevelまでを、Levelごとに最大5件抽出します</span>
+                <span>{levelRetrievalText(level)}</span>
               </div>
             </form>
 
