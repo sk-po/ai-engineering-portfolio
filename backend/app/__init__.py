@@ -1,1 +1,1 @@
-"""FDE portfolio backend application package."""
+"""ASVS requirement finder backend application package."""

@@ -40,6 +40,6 @@ param enableLocalAuthentication = true
 param localDeveloperPrincipalId = ''
 
 param tags = {
-  purpose: 'fde-portfolio'
+  purpose: 'asvs-portfolio'
   workload: 'owasp-asvs-rag'
 }

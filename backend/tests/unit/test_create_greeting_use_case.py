@@ -8,9 +8,9 @@ class CreateGreetingTestCase(unittest.TestCase):
         self.use_case = CreateGreeting()
 
     def test_creates_greeting_for_name(self) -> None:
-        greeting = self.use_case.execute("FDE")
+        greeting = self.use_case.execute("world")
 
-        self.assertEqual(greeting.message, "Hello, FDE!")
+        self.assertEqual(greeting.message, "Hello, world!")
 
     def test_uses_world_for_blank_name(self) -> None:
         greeting = self.use_case.execute("  ")
