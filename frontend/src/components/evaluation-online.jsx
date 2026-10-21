@@ -45,6 +45,10 @@ const PLANNED_SIGNALS = [
 export default function EvaluationOnline() {
   return (
     <>
+      <div className="wip-banner strong" role="note">
+        <span className="wip-tag">作成中</span>
+        <span>このオンライン評価は設計のみで、まだ実装されていません。数値は表示されず、計測対象と設計方針の提示に留まります。</span>
+      </div>
       <p className="eyebrow">ONLINE EVALUATION</p>
       <h1>本番トラフィックの監視と還流</h1>
       <p className="lead">

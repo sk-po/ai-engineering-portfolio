@@ -394,8 +394,13 @@ summary {
   font-size: 0.78rem;
 }
 
-.guided-workspace, .how-to-use { max-width: 56rem; margin: 3rem auto 5rem; }
-.guided-workspace h1, .how-to-use h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+.guided-workspace { padding: clamp(3.5rem, 8vw, 6.5rem) 0 3rem; }
+.how-to-use { max-width: 56rem; margin: 3rem auto 5rem; }
+.how-to-use h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+
+.wip-banner { display: flex; align-items: center; gap: 0.75rem; margin: 0 0 1.5rem; padding: 0.85rem 1.1rem; border: 1px solid #f0c36d; border-radius: 0.7rem; background: #fff7e0; color: #7a5c13; font-size: 0.9rem; font-weight: 600; line-height: 1.6; }
+.wip-banner.strong { border-color: #e4913c; background: #fde7d2; color: #8a4b12; }
+.wip-tag { flex-shrink: 0; padding: 0.2rem 0.65rem; border-radius: 999px; background: #e4913c; color: #fff; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; }
 
 .site-nav { display: inline-flex; gap: 1.25rem; align-items: center; }
 .site-nav a { color: #536079; font-size: 0.82rem; font-weight: 700; text-decoration: none; }
@@ -446,8 +451,8 @@ summary {
 .failure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.8rem; }
 .failure-card { padding: 1rem 1.1rem; border: 1px solid #e7d3c0; border-radius: 0.9rem; background: #fdf6f0; }
 .failure-head { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.failure-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 0.9rem 0 0; }
-.failure-metrics dt { color: #7a8497; font-size: 0.68rem; font-weight: 700; }
+.failure-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr)); gap: 0.5rem 0.9rem; margin: 0.9rem 0 0; }
+.failure-metrics dt { color: #7a8497; font-size: 0.68rem; font-weight: 700; overflow-wrap: anywhere; }
 .failure-metrics dd { margin: 0.15rem 0 0; font-weight: 800; color: #25314a; font-size: 0.95rem; }
 .failure-metrics dd.low, .cell-low { color: #b4531a; font-weight: 800; }
 

@@ -56,7 +56,7 @@ test("run比較がCSV→Azureの検索指標差分を示す", () => {
 
 test("詳細runを検索のみのrunへ切り替えると生成指標の非対象を明示する", () => {
   render(<EvaluationOffline />);
-  const detailSelect = screen.getByLabelText("表示するrun");
+  const detailSelect = screen.getByLabelText("表示する実行日時");
   fireEvent.change(detailSelect, { target: { value: "retrieval-csv-51" } });
   assert.match(
     screen.getByText(/このrunは検索のみの評価です/).textContent,
