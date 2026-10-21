@@ -10,6 +10,7 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 $frontendDirectory = Join-Path $projectRoot "frontend"
 $backendDirectory = Join-Path $projectRoot "backend"
 $backendPython = Join-Path $backendDirectory ".venv\Scripts\python.exe"
+$uvExecutable = (Get-Command uv -ErrorAction Stop).Source
 $frontendProcess = $null
 $backendProcess = $null
 
@@ -60,15 +61,9 @@ try {
         Pop-Location
     }
 
-    if (-not (Test-Path -LiteralPath $backendPython)) {
-        Write-Host "[setup] Creating the Python 3.13 virtual environment..." -ForegroundColor Cyan
-        & py -3.13 -m venv (Join-Path $backendDirectory ".venv")
-        Assert-CommandSucceeded "Python virtual environment creation"
-    }
-
-    Write-Host "[setup] Installing backend dependencies..." -ForegroundColor Cyan
-    & $backendPython -m pip install --disable-pip-version-check -r (Join-Path $backendDirectory "requirements-dev.txt")
-    Assert-CommandSucceeded "Backend dependency installation"
+    Write-Host "[setup] Syncing backend dependencies..." -ForegroundColor Cyan
+    & $uvExecutable sync --project $backendDirectory --locked --dev
+    Assert-CommandSucceeded "Backend dependency synchronization"
 
     $nodeExecutable = (Get-Command node -ErrorAction Stop).Source
 

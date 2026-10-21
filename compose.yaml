@@ -1,0 +1,64 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    environment:
+      BACKEND_URL: http://backend:8000
+      HOST: 0.0.0.0
+      PORT: 3000
+    init: true
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    volumes:
+      - ./frontend/src:/app/src:ro
+      - ./frontend/test:/app/test:ro
+      - ./frontend/next.config.mjs:/app/next.config.mjs:ro
+      - ./frontend/eslint.config.mjs:/app/eslint.config.mjs:ro
+      - ./frontend/jsconfig.json:/app/jsconfig.json:ro
+    command: ["npm", "run", "dev"]
+
+  backend:
+    build:
+      context: ./backend
+      target: development
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      ASVS_SEARCH_BACKEND: ${ASVS_SEARCH_BACKEND:-csv}
+      AZURE_SEARCH_ENDPOINT: ${AZURE_SEARCH_ENDPOINT:-}
+      AZURE_SEARCH_INDEX_NAME: ${AZURE_SEARCH_INDEX_NAME:-security-docs-v1}
+      AZURE_OPENAI_BASE_URL: ${AZURE_OPENAI_BASE_URL:-}
+      AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${AZURE_OPENAI_EMBEDDING_DEPLOYMENT:-text-embedding-3-small}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_CHAT_MODEL: ${OPENAI_CHAT_MODEL:-}
+      OPENAI_CHAT_TIMEOUT_SECONDS: ${OPENAI_CHAT_TIMEOUT_SECONDS:-30}
+      OPENAI_CHAT_MAX_COMPLETION_TOKENS: ${OPENAI_CHAT_MAX_COMPLETION_TOKENS:-800}
+      RAGAS_EVALUATOR_MODEL: ${RAGAS_EVALUATOR_MODEL:-}
+      RAGAS_EVALUATOR_EMBEDDING_MODEL: ${RAGAS_EVALUATOR_EMBEDDING_MODEL:-text-embedding-3-small}
+      RAGAS_EVALUATOR_TIMEOUT_SECONDS: ${RAGAS_EVALUATOR_TIMEOUT_SECONDS:-120}
+      RAGAS_EVALUATOR_CONCURRENCY: ${RAGAS_EVALUATOR_CONCURRENCY:-1}
+      # Entra ID service principal for DefaultAzureCredential (EnvironmentCredential).
+      # Values come from .env; leave unset to fall back to other credential sources.
+      AZURE_TENANT_ID: ${AZURE_TENANT_ID:-}
+      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID:-}
+      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET:-}
+    init: true
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend/app:/app/app:ro
+      - ./backend/tests:/app/tests:ro
+      - ./backend/scripts:/app/scripts:ro
+      - ./backend/test-results:/app/test-results
+      - ./docs/public:/docs/public:ro
+    command:
+      - python
+      - -m
+      - uvicorn
+      - app.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --reload

@@ -1,0 +1,10 @@
+# Optional override for networks that inspect HTTPS traffic with a local root CA.
+services:
+  backend:
+    build:
+      secrets:
+        - local_ca
+
+secrets:
+  local_ca:
+    file: ${CONTAINER_CA_CERT:-.certs/local-ca.crt}
