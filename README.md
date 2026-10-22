@@ -10,7 +10,9 @@ OWASP ASVS 5.0.0 のセキュリティ要件を**日本語で検索**し、**取
 
 RAG の実測品質は **https://frontend-asvs-rag-dev.thankfulgrass-fd1bce4d.japaneast.azurecontainerapps.io/evaluation**（RAG評価ページ）で確認できます。
 
-<!-- TODO: 代表画面のスクリーンショットを docs 配下などに置き、ここに貼る -->
+<p align="center">
+  <img src="assets/screenshots/search.png" alt="要件検索画面。3タブ（要件検索・AI回答・ガイド付きセキュリティレビュー）と、Level別RAG抽出の凡例を表示。" width="860">
+</p>
 
 ## 対象と課題
 

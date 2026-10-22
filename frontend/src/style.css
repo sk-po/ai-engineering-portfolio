@@ -105,9 +105,9 @@ h1 {
   max-width: 100%;
   margin: 0;
   color: #10182b;
-  font-size: clamp(2.4rem, 6.5vw, 5.25rem);
-  line-height: 1.08;
-  letter-spacing: -0.055em;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
 }
 
 .lead {
@@ -395,7 +395,6 @@ summary {
   font-size: 0.78rem;
 }
 
-.guided-workspace { padding: clamp(3.5rem, 8vw, 6.5rem) 0 3rem; }
 .how-to-use { max-width: 56rem; margin: 3rem auto 5rem; }
 .how-to-use h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
 
@@ -452,9 +451,10 @@ summary {
 .failure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.8rem; }
 .failure-card { padding: 1rem 1.1rem; border: 1px solid #e7d3c0; border-radius: 0.9rem; background: #fdf6f0; }
 .failure-head { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.failure-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr)); gap: 0.5rem 0.9rem; margin: 0.9rem 0 0; }
-.failure-metrics dt { color: #7a8497; font-size: 0.68rem; font-weight: 700; overflow-wrap: anywhere; }
-.failure-metrics dd { margin: 0.15rem 0 0; font-weight: 800; color: #25314a; font-size: 0.95rem; }
+.failure-metrics { display: grid; grid-template-columns: 1fr; gap: 0.4rem; margin: 0.9rem 0 0; }
+.failure-metrics > div { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
+.failure-metrics dt { color: #7a8497; font-size: 0.74rem; font-weight: 700; }
+.failure-metrics dd { margin: 0; font-weight: 800; color: #25314a; font-size: 0.9rem; }
 .failure-metrics dd.low, .cell-low { color: #b4531a; font-weight: 800; }
 
 .table-scroll { overflow-x: auto; border: 1px solid #dce1ed; border-radius: 0.9rem; }
